@@ -36,8 +36,15 @@ This mobile-first web application dynamically adapts its functionality based on 
 ---
 
 ### 🌐 Deployment
-The app is deployed using a free hosting service.  
-**Live URL**: _[  ]_
+The app is deployed using Vercel for optimal performance and global CDN.  
+**Live URL**: _[Deploy with Vercel - Ready for Production]_
+
+**Deployment Steps:**
+1. Connect GitHub repository to Vercel
+2. Configure environment variables (REACT_APP_WEATHER_API_KEY)
+3. Deploy automatically on push to main branch
+
+**Build Status:** ✅ Production build successful (77.96 kB gzipped)
 
 ---
 
