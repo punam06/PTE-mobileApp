@@ -9,6 +9,8 @@ interface WeatherProps {
 
 interface WeatherData {
   location: string;
+  country: string; // ISO country code
+  countryName: string; // Full country name
   temperature: number;
   description: string;
   icon: string;
@@ -51,7 +53,9 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
 
       const data = response.data;
       const weatherData: WeatherData = {
-        location: `${data.name}, ${data.sys.country}`,
+        location: data.name,
+        country: data.sys.country,
+        countryName: data.sys.country, // OpenWeatherMap doesn't provide full country name, only code
         temperature: Math.round(data.main.temp),
         description: data.weather[0].description,
         icon: data.weather[0].icon,
@@ -108,7 +112,9 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
 
       const data = response.data;
       const weatherData: WeatherData = {
-        location: `${data.name}, ${data.sys.country}`,
+        location: data.name,
+        country: data.sys.country,
+        countryName: data.sys.country,
         temperature: Math.round(data.main.temp),
         description: data.weather[0].description,
         icon: data.weather[0].icon,
@@ -221,6 +227,46 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
     return str.replace(/\b\w/g, char => char.toUpperCase());
   };
 
+  // Function to get country flag emoji from country code
+  const getCountryFlag = (countryCode: string) => {
+    // Special handling for specific countries
+    const specialFlags: Record<string, string> = {
+      'BD': '🇧🇩', // Bangladesh
+      'IN': '🇮🇳', // India
+      'PK': '🇵🇰', // Pakistan
+      'US': '🇺🇸', // United States
+      'GB': '🇬🇧', // United Kingdom
+      'CA': '🇨🇦', // Canada
+      'AU': '🇦🇺', // Australia
+      'JP': '🇯🇵', // Japan
+      'CN': '🇨🇳', // China
+      'DE': '🇩🇪', // Germany
+      'FR': '🇫🇷', // France
+      'IT': '🇮🇹', // Italy
+      'ES': '🇪🇸', // Spain
+      'RU': '🇷🇺', // Russia
+      'BR': '🇧🇷', // Brazil
+      'MX': '🇲🇽', // Mexico
+      'SA': '🇸🇦', // Saudi Arabia
+      'AE': '🇦🇪', // UAE
+      'SG': '🇸🇬', // Singapore
+      'ZA': '🇿🇦', // South Africa
+    };
+
+    // Return special flag if it exists
+    if (countryCode in specialFlags) {
+      return specialFlags[countryCode];
+    }
+
+    // Generate flag emoji from country code for other countries
+    const codePoints = countryCode
+      .toUpperCase()
+      .split('')
+      .map(char => 127397 + char.charCodeAt(0));
+    
+    return String.fromCodePoint(...codePoints);
+  };
+
   if (!isActive) return null;
 
   return (
@@ -295,8 +341,10 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
             </div>
 
             <div className="weather-info">
-              <h2 className="location" aria-label={`Location: ${weather.location}`}>
-                📍 {weather.location}
+              <h2 className="location" aria-label={`Location: ${weather.location}, ${weather.countryName}`}>
+                <span className="country-flag" aria-hidden="true">
+                  {getCountryFlag(weather.country)}
+                </span> {weather.location}, {weather.country}
               </h2>
               <p className="description" aria-label={`Weather condition: ${weather.description}`}>
                 {capitalize(weather.description)}
