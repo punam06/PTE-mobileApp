@@ -1,0 +1,360 @@
+.timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+  color: white;
+  text-align: center;
+  position: relative;
+}
+
+.timer-display {
+  margin-bottom: 2rem;
+}
+
+.time-display {
+  font-size: 4rem;
+  font-weight: 300;
+  margin: 0;
+  font-family: 'Courier New', monospace;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.progress-container {
+  width: 300px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  margin: 1rem auto;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  transition: width 1s linear;
+}
+
+.status-indicator {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.running {
+  color: #2ecc71;
+  animation: pulse-green 1.5s infinite;
+}
+
+.paused {
+  color: #f39c12;
+}
+
+.ready {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.timer-setup {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 100%;
+}
+
+.timer-setup h3, .timer-setup h4 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.preset-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.preset-btn {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.preset-btn:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.custom-timer {
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  padding-top: 1.5rem;
+}
+
+.custom-inputs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.input-group {
+  flex: 1;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.set-custom-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #2ecc71;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+
+.set-custom-btn:hover:not(:disabled) {
+  background: #27ae60;
+  transform: translateY(-2px);
+}
+
+.set-custom-btn:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.help-text {
+  font-size: 0.8rem;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.timer-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.main-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.timer-controls button {
+  padding: 15px 25px;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.start-btn {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: white;
+}
+
+.start-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+}
+
+.pause-btn {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+}
+
+.pause-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+}
+
+.reset-btn {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+}
+
+.reset-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+.stop-btn {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.stop-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+}
+
+.timer-finished {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #2ecc71;
+  color: white;
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 0 50px rgba(46, 204, 113, 0.6);
+  animation: celebration 2s infinite;
+  z-index: 1000;
+}
+
+.timer-finished h2 {
+  margin: 0 0 1rem 0;
+  font-size: 2rem;
+  animation: bounce 1s infinite;
+}
+
+.timer-finished p {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.2rem;
+}
+
+.dismiss-btn {
+  background: white;
+  color: #2ecc71;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dismiss-btn:hover {
+  background: #f8f9fa;
+  transform: scale(1.05);
+}
+
+@keyframes pulse-green {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+@keyframes celebration {
+  0%, 100% { 
+    box-shadow: 0 0 50px rgba(46, 204, 113, 0.6);
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 80px rgba(46, 204, 113, 0.9);
+    transform: translate(-50%, -50%) scale(1.02);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .time-display {
+    font-size: 3rem;
+  }
+  
+  .timer-setup {
+    padding: 1.5rem;
+  }
+  
+  .preset-buttons {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+  
+  .custom-inputs {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .main-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .timer-controls button {
+    min-width: 200px;
+  }
+  
+  .progress-container {
+    width: 250px;
+  }
+  
+  .timer-finished {
+    left: 10px;
+    right: 10px;
+    transform: translateY(-50%);
+    top: 50%;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (orientation: landscape) and (max-height: 600px) {
+  .timer {
+    padding: 10px;
+  }
+  
+  .time-display {
+    font-size: 2.5rem;
+  }
+  
+  .timer-display {
+    margin-bottom: 1rem;
+  }
+  
+  .timer-setup {
+    padding: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .preset-buttons {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
