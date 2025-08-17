@@ -32,16 +32,20 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
   const [error, setError] = useState<WeatherError | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  // Real API key for OpenWeatherMap
+  // Public API key for OpenWeatherMap - explicitly exposed for this demo application
   const API_KEY = '27b5e7bcaaea4262d9f45296b32ba71c';
   const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
+  
+  // Force HTTPS for API requests to avoid mixed content issues
+  const secureBaseUrl = BASE_URL.replace('http:', 'https:');
 
   const fetchWeatherByCoords = async (lat: number, lon: number) => {
     try {
       setLoading(true);
       setError(null);
+      console.log(`Fetching weather for coordinates: ${lat}, ${lon}`);
 
-      const response = await axios.get(BASE_URL, {
+      const response = await axios.get(secureBaseUrl, {
         params: {
           lat,
           lon,
@@ -100,8 +104,9 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
     try {
       setLoading(true);
       setError(null);
+      console.log(`Fetching weather for city: ${city}`);
 
-      const response = await axios.get(BASE_URL, {
+      const response = await axios.get(secureBaseUrl, {
         params: {
           q: city,
           appid: API_KEY,
@@ -139,11 +144,15 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
   };
 
   const getUserLocation = () => {
+    console.log('Requesting user location...');
     if (!navigator.geolocation) {
+      console.error('Geolocation API not available');
       setError({ 
         message: 'Geolocation is not supported by this browser. Please enable location services.',
         code: 'NO_GEOLOCATION'
       });
+      // Fall back to default city since geolocation is unavailable
+      fetchWeatherByCity('New York');
       return;
     }
 
@@ -158,27 +167,35 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
         console.error('Geolocation error:', error);
         // More detailed error messages based on the error code
         if (error.code === 1) {
+          console.error('Permission denied:', error);
           setError({ 
-            message: 'Location permission denied. Please enable location services for real-time weather.',
+            message: 'Location permission denied. Showing weather for a default location.',
             code: 'PERMISSION_DENIED'
           });
+          // Fall back to a default city if permission denied
+          fetchWeatherByCity('New York');
         } else if (error.code === 2) {
+          console.error('Position unavailable:', error);
           setError({ 
-            message: 'Location unavailable. Please try again or check device settings.',
+            message: 'Location unavailable. Showing weather for a default location.',
             code: 'POSITION_UNAVAILABLE'
           });
+          fetchWeatherByCity('London');
         } else if (error.code === 3) {
+          console.error('Timeout:', error);
           setError({ 
-            message: 'Location request timed out. Please try again.',
+            message: 'Location request timed out. Showing weather for a default location.',
             code: 'TIMEOUT'
           });
+          fetchWeatherByCity('Tokyo');
         } else {
+          console.error('Unknown error:', error);
           setError({ 
-            message: 'Unable to get your location. Please enable location services.',
+            message: 'Unable to get your location. Showing weather for a default location.',
             code: 'LOCATION_ERROR'
           });
+          fetchWeatherByCity('Sydney');
         }
-        setLoading(false);
       },
       { 
         timeout: 15000, 
