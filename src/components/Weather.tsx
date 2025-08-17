@@ -232,8 +232,20 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
 
         {error && !weather && (
           <div className="weather-error" role="alert">
-            <h3>⚠️ Weather Unavailable</h3>
-            <p>{error.message}</p>
+            <div className="error-content">
+              <h3>⚠️ Weather Unavailable</h3>
+              <p>{error.message}</p>
+              {error.code === 'API_KEY_ERROR' && (
+                <div className="error-help">
+                  <p>💡 To use real weather data:</p>
+                  <ol>
+                    <li>Get a free API key from <a href="https://openweathermap.org/api" target="_blank" rel="noopener noreferrer">OpenWeatherMap</a></li>
+                    <li>Add it to your .env file as REACT_APP_WEATHER_API_KEY</li>
+                    <li>Restart the development server</li>
+                  </ol>
+                </div>
+              )}
+            </div>
             <button 
               className="retry-btn"
               onClick={refreshWeather}
