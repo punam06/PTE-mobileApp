@@ -9,6 +9,34 @@ export type OrientationType =
 export const useOrientation = (): OrientationType => {
   const [orientation, setOrientation] = useState<OrientationType>('portrait-primary');
 
+  // Keep track of device orientation
+  const [deviceIsUpsideDown, setDeviceIsUpsideDown] = useState(false);
+
+  // Handler for device orientation event
+  useEffect(() => {
+    const handleDeviceOrientation = (event: DeviceOrientationEvent) => {
+      // Beta is the front-to-back tilt in degrees, where front is positive
+      const beta = event.beta || 0;
+      
+      // Gamma is the left-to-right tilt in degrees, where right is positive
+      const gamma = event.gamma || 0;
+      
+      // Device is upside down when beta is negative and near -180 degrees
+      // Or when beta is around 180 degrees
+      const isUpsideDown = 
+        (beta < -90 && beta > -180) || 
+        (beta > 90 && beta < 180);
+      
+      setDeviceIsUpsideDown(isUpsideDown);
+    };
+
+    window.addEventListener('deviceorientation', handleDeviceOrientation);
+    
+    return () => {
+      window.removeEventListener('deviceorientation', handleDeviceOrientation);
+    };
+  }, []);
+
   useEffect(() => {
     const updateOrientation = () => {
       // Check if screen orientation API is available
@@ -19,12 +47,15 @@ export const useOrientation = (): OrientationType => {
         // Fallback for browsers without screen.orientation API
         const { innerWidth, innerHeight } = window;
         if (innerHeight > innerWidth) {
-          // Portrait mode - we'll default to primary for now
-          // In a real app, you might use accelerometer data to detect upside down
-          setOrientation('portrait-primary');
+          // Portrait mode - check if the device is upside down
+          setOrientation(deviceIsUpsideDown ? 'portrait-secondary' : 'portrait-primary');
         } else {
-          // Landscape mode - default to primary
-          setOrientation('landscape-primary');
+          // Landscape mode - we need to determine left-side up vs right-side up
+          // This is approximate - we use deviceOrientation gamma angle
+          const isLeftSideUp = deviceIsUpsideDown || // If completely upside down in landscape
+            (window as any).orientation === 90; // Legacy orientation API
+          
+          setOrientation(isLeftSideUp ? 'landscape-secondary' : 'landscape-primary');
         }
       }
     };
@@ -38,10 +69,14 @@ export const useOrientation = (): OrientationType => {
       setTimeout(updateOrientation, 100);
     };
 
-    // Event listeners
+    // Event listeners for orientation and size changes
     window.addEventListener('orientationchange', handleOrientationChange);
     window.addEventListener('resize', handleOrientationChange);
     
+    // Also update when device orientation changes (for upside down detection)
+    window.addEventListener('deviceorientation', handleOrientationChange);
+    
+    // Standard screen orientation API
     if (window.screen && window.screen.orientation) {
       window.screen.orientation.addEventListener('change', handleOrientationChange);
     }
@@ -49,12 +84,18 @@ export const useOrientation = (): OrientationType => {
     return () => {
       window.removeEventListener('orientationchange', handleOrientationChange);
       window.removeEventListener('resize', handleOrientationChange);
+      window.removeEventListener('deviceorientation', handleOrientationChange);
       
       if (window.screen && window.screen.orientation) {
         window.screen.orientation.removeEventListener('change', handleOrientationChange);
       }
     };
   }, []);
+
+  // Log orientation changes for debugging
+  useEffect(() => {
+    console.log(`Orientation changed: ${orientation}, Device upside down: ${deviceIsUpsideDown}`);
+  }, [orientation, deviceIsUpsideDown]);
 
   return orientation;
 };
