@@ -30,8 +30,8 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
   const [error, setError] = useState<WeatherError | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  // Using a demo API key - in production, this should be in environment variables
-  const API_KEY = process.env.REACT_APP_WEATHER_API_KEY || 'demo_key';
+  // Real API key for OpenWeatherMap
+  const API_KEY = '27b5e7bcaaea4262d9f45296b32ba71c';
   const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
 
   const fetchWeatherByCoords = async (lat: number, lon: number) => {
@@ -123,22 +123,10 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
     } catch (err: any) {
       console.error('Weather fetch error:', err);
       setError({ 
-        message: 'Unable to fetch weather data. Showing demo data.',
-        code: 'DEMO_MODE'
+        message: 'Unable to fetch weather data. Please try again or check your internet connection.',
+        code: 'API_ERROR'
       });
-      
-      // Show demo data when API fails
-      setWeather({
-        location: 'Demo City, XX',
-        temperature: 22,
-        description: 'partly cloudy',
-        icon: '02d',
-        humidity: 65,
-        windSpeed: 3.5,
-        feelsLike: 24,
-        pressure: 1013
-      });
-      setLastUpdated(new Date());
+      // Do not show demo data, we want real weather only
     } finally {
       setLoading(false);
     }
@@ -147,27 +135,50 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
   const getUserLocation = () => {
     if (!navigator.geolocation) {
       setError({ 
-        message: 'Geolocation is not supported by this browser.',
+        message: 'Geolocation is not supported by this browser. Please enable location services.',
         code: 'NO_GEOLOCATION'
       });
-      fetchWeatherByCity();
       return;
     }
 
+    setLoading(true);
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
+        console.log(`Location obtained: ${latitude}, ${longitude}`);
         fetchWeatherByCoords(latitude, longitude);
       },
       (error) => {
         console.error('Geolocation error:', error);
-        setError({ 
-          message: 'Unable to get your location. Showing weather for London.',
-          code: 'LOCATION_ERROR'
-        });
-        fetchWeatherByCity();
+        // More detailed error messages based on the error code
+        if (error.code === 1) {
+          setError({ 
+            message: 'Location permission denied. Please enable location services for real-time weather.',
+            code: 'PERMISSION_DENIED'
+          });
+        } else if (error.code === 2) {
+          setError({ 
+            message: 'Location unavailable. Please try again or check device settings.',
+            code: 'POSITION_UNAVAILABLE'
+          });
+        } else if (error.code === 3) {
+          setError({ 
+            message: 'Location request timed out. Please try again.',
+            code: 'TIMEOUT'
+          });
+        } else {
+          setError({ 
+            message: 'Unable to get your location. Please enable location services.',
+            code: 'LOCATION_ERROR'
+          });
+        }
+        setLoading(false);
       },
-      { timeout: 10000, enableHighAccuracy: false }
+      { 
+        timeout: 15000, 
+        enableHighAccuracy: true,
+        maximumAge: 0 // Force fresh position
+      }
     );
   };
 
@@ -176,8 +187,18 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
   };
 
   useEffect(() => {
-    if (isActive && !weather && !loading) {
+    if (isActive) {
+      // Always try to get user location when the weather component becomes active
       getUserLocation();
+      
+      // Set up periodic refresh when component is active
+      const refreshInterval = setInterval(() => {
+        if (isActive) {
+          refreshWeather();
+        }
+      }, 300000); // Refresh every 5 minutes when active
+      
+      return () => clearInterval(refreshInterval);
     }
   }, [isActive]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -229,14 +250,20 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
             <div className="error-content">
               <h3>⚠️ {t('weather_unavailable')}</h3>
               <p>{error.message}</p>
+              {(error.code === 'PERMISSION_DENIED' || error.code === 'LOCATION_ERROR' || error.code === 'NO_GEOLOCATION') && (
+                <div className="error-help">
+                  <p>💡 To see real-time weather for your location:</p>
+                  <ol>
+                    <li>Ensure location services are enabled in your device settings</li>
+                    <li>Allow location access when prompted by your browser</li>
+                    <li>For iOS: Settings → Privacy → Location Services → Safari → Allow</li>
+                    <li>For Android: Settings → Location → App Permissions → Browser → Allow</li>
+                  </ol>
+                </div>
+              )}
               {error.code === 'API_KEY_ERROR' && (
                 <div className="error-help">
-                  <p>💡 To use real weather data:</p>
-                  <ol>
-                    <li>Get a free API key from <a href="https://openweathermap.org/api" target="_blank" rel="noopener noreferrer">OpenWeatherMap</a></li>
-                    <li>Add it to your .env file as REACT_APP_WEATHER_API_KEY</li>
-                    <li>Restart the development server</li>
-                  </ol>
+                  <p>💡 Weather API connection error. Please try again later.</p>
                 </div>
               )}
             </div>
@@ -252,11 +279,6 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
 
         {weather && (
           <div className="weather-content">
-            {error && error.code === 'DEMO_MODE' && (
-              <div className="demo-notice">
-                <p>📍 {t('demo_data')}</p>
-              </div>
-            )}
             
             <div className="weather-main">
               <div className="weather-icon" aria-hidden="true">
