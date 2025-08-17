@@ -120,8 +120,11 @@ export const Timer: React.FC<TimerProps> = ({ isActive }) => {
     <div className="timer" role="main" aria-label="Countdown Timer">
       {isFinished && (
         <div className="timer-finished" role="alert">
-          <h2>⏰ Time's Up!</h2>
-          <p>Your timer has finished</p>
+          <div className="finished-content">
+            <h2>⏰ Time's Up!</h2>
+            <p>Your timer has finished</p>
+            <div className="finished-animation">🎉</div>
+          </div>
           <button 
             className="dismiss-btn"
             onClick={dismissFinished}
