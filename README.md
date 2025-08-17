@@ -1,8 +1,25 @@
 
-## 📱 Orientation-Aware Mobile Web App
+# 📱 PTE Mobile App - Global Orientation-Aware Application
 
-### 🏁 Project Overview
-This mobile-first web application dynamically adapts its functionality based on how the user holds their mobile device. Depending on the orientation, it displays an alarm clock, stopwatch, countdown timer, or weather information. The app is built using **React** and optionally powered by a **Django REST API**, and it runs entirely in the browser—no native installation required.
+## 🌍 **LIVE APP**: https://pte-mobile-app-punam.surge.sh
+
+### 🚀 Quick Access Links
+- **🌐 Live Application**: [pte-mobile-app-punam.surge.sh](https://pte-mobile-app-punam.surge.sh)
+- **📂 GitHub Repository**: [github.com/punam06/PTE-mobileApp](https://github.com/punam06/PTE-mobileApp)
+- **📋 Deployment Details**: [View DEPLOYMENT_SUMMARY.md](./DEPLOYMENT_SUMMARY.md)
+
+---
+
+## 🏁 Project Overview
+This mobile-first web application dynamically adapts its functionality based on how the user holds their mobile device. Depending on the orientation, it displays an alarm clock, stopwatch, countdown timer, or weather information. The app supports **20 languages** and **249 countries** worldwide.
+
+---
+
+## 🌟 Global Features
+- **🌍 20 Language Support**: Including English, Spanish, French, German, Japanese, Chinese, Arabic, Hindi, **Bangla**, and more
+- **🗺️ 249 Country Coverage**: Complete country names and flags for worldwide weather data
+- **📱 Mobile-Optimized**: Touch-friendly interface with orientation awareness
+- **🌦️ Real-time Weather**: Live weather data for any location globally
 
 ---
 
