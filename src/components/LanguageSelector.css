@@ -42,14 +42,17 @@
   border-radius: 15px;
   backdrop-filter: blur(15px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  min-width: 220px;
+  min-width: 420px;
+  max-width: 80vw;
   animation: dropdownSlide 0.3s ease-out;
   overflow: hidden;
 }
 
 .language-list {
-  max-height: 300px;
+  max-height: 400px;
   overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
 .language-option {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useI18nContext } from '../hooks/useI18n';
+import { countryCodeToName } from '../utils/countryList';
 import './Weather.css';
 
 interface WeatherProps {
@@ -59,7 +60,7 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
       const weatherData: WeatherData = {
         location: data.name,
         country: data.sys.country,
-        countryName: data.sys.country, // OpenWeatherMap doesn't provide full country name, only code
+        countryName: countryCodeToName[data.sys.country] || data.sys.country, // Use full country name from our mapping
         temperature: Math.round(data.main.temp),
         description: data.weather[0].description,
         icon: data.weather[0].icon,
@@ -119,7 +120,7 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
       const weatherData: WeatherData = {
         location: data.name,
         country: data.sys.country,
-        countryName: data.sys.country,
+        countryName: countryCodeToName[data.sys.country] || data.sys.country,
         temperature: Math.round(data.main.temp),
         description: data.weather[0].description,
         icon: data.weather[0].icon,
@@ -246,28 +247,39 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
 
   // Function to get country flag emoji from country code
   const getCountryFlag = (countryCode: string) => {
-    // Special handling for specific countries
+    // Comprehensive special flags mapping (all supported countries)
     const specialFlags: Record<string, string> = {
-      'BD': '🇧🇩', // Bangladesh
-      'IN': '🇮🇳', // India
-      'PK': '🇵🇰', // Pakistan
-      'US': '🇺🇸', // United States
-      'GB': '🇬🇧', // United Kingdom
-      'CA': '🇨🇦', // Canada
-      'AU': '🇦🇺', // Australia
-      'JP': '🇯🇵', // Japan
-      'CN': '🇨🇳', // China
-      'DE': '🇩🇪', // Germany
-      'FR': '🇫🇷', // France
-      'IT': '🇮🇹', // Italy
-      'ES': '🇪🇸', // Spain
-      'RU': '🇷🇺', // Russia
-      'BR': '🇧🇷', // Brazil
-      'MX': '🇲🇽', // Mexico
-      'SA': '🇸🇦', // Saudi Arabia
-      'AE': '🇦🇪', // UAE
-      'SG': '🇸🇬', // Singapore
-      'ZA': '🇿🇦', // South Africa
+      'AF': '🇦🇫', 'AL': '🇦🇱', 'DZ': '🇩🇿', 'AS': '🇦🇸', 'AD': '🇦🇩', 'AO': '🇦🇴', 'AI': '🇦🇮', 'AQ': '🇦🇶',
+      'AG': '🇦🇬', 'AR': '🇦🇷', 'AM': '🇦🇲', 'AW': '🇦🇼', 'AU': '🇦🇺', 'AT': '🇦🇹', 'AZ': '🇦🇿', 'BS': '🇧🇸',
+      'BH': '🇧🇭', 'BD': '🇧🇩', 'BB': '🇧🇧', 'BY': '🇧🇾', 'BE': '🇧🇪', 'BZ': '🇧🇿', 'BJ': '��', 'BM': '🇧🇲',
+      'BT': '��', 'BO': '🇧🇴', 'BA': '🇧🇦', 'BW': '🇧🇼', 'BR': '🇧🇷', 'IO': '��', 'VG': '🇻🇬', 'BN': '🇧🇳',
+      'BG': '��🇬', 'BF': '🇧🇫', 'BI': '🇧🇮', 'KH': '🇰🇭', 'CM': '🇨🇲', 'CA': '🇨🇦', 'CV': '🇨🇻', 'KY': '🇰🇾',
+      'CF': '🇨�', 'TD': '🇹🇩', 'CL': '🇨🇱', 'CN': '🇨🇳', 'CX': '🇨🇽', 'CC': '🇨🇨', 'CO': '🇨🇴', 'KM': '🇰🇲',
+      'CG': '🇨🇬', 'CD': '🇨🇩', 'CK': '🇨🇰', 'CR': '🇨🇷', 'CI': '🇨🇮', 'HR': '🇭🇷', 'CU': '�🇺', 'CW': '🇨🇼',
+      'CY': '��', 'CZ': '🇨🇿', 'DK': '🇩🇰', 'DJ': '🇩🇯', 'DM': '🇩🇲', 'DO': '🇩🇴', 'EC': '🇪🇨', 'EG': '🇪�',
+      'SV': '🇸🇻', 'GQ': '🇬🇶', 'ER': '🇪🇷', 'EE': '🇪�', 'ET': '🇪🇹', 'FK': '🇫🇰', 'FO': '🇫🇴', 'FJ': '🇫🇯',
+      'FI': '🇫🇮', 'FR': '🇫🇷', 'GF': '🇬🇫', 'PF': '🇵🇫', 'TF': '🇹🇫', 'GA': '🇬🇦', 'GM': '🇬🇲', 'GE': '🇬🇪',
+      'DE': '🇩🇪', 'GH': '🇬🇭', 'GI': '🇬🇮', 'GR': '🇬🇷', 'GL': '🇬🇱', 'GD': '🇬🇩', 'GP': '🇬🇵', 'GU': '🇬🇺',
+      'GT': '🇬🇹', 'GG': '🇬🇬', 'GN': '🇬🇳', 'GW': '🇬🇼', 'GY': '🇬🇾', 'HT': '🇭🇹', 'HM': '🇭🇲', 'VA': '🇻🇦',
+      'HN': '🇭🇳', 'HK': '🇭🇰', 'HU': '🇭🇺', 'IS': '🇮🇸', 'IN': '🇮🇳', 'ID': '🇮�', 'IR': '🇮🇷', 'IQ': '🇮🇶',
+      'IE': '🇮🇪', 'IM': '🇮🇲', 'IL': '🇮🇱', 'IT': '🇮🇹', 'JM': '🇯🇲', 'JP': '🇯🇵', 'JE': '🇯�', 'JO': '🇯🇴',
+      'KZ': '🇰🇿', 'KE': '🇰🇪', 'KI': '🇰🇮', 'KP': '🇰🇵', 'KR': '🇰🇷', 'KW': '🇰🇼', 'KG': '🇰�', 'LA': '🇱🇦',
+      'LV': '🇱🇻', 'LB': '🇱🇧', 'LS': '🇱🇸', 'LR': '�🇷', 'LY': '🇱🇾', 'LI': '🇱🇮', 'LT': '🇱🇹', 'LU': '🇱🇺',
+      'MO': '🇲🇴', 'MK': '🇲🇰', 'MG': '🇲🇬', 'MW': '🇲🇼', 'MY': '🇲🇾', 'MV': '🇲🇻', 'ML': '🇲🇱', 'MT': '🇲🇹',
+      'MH': '🇲🇭', 'MQ': '🇲🇶', 'MR': '🇲🇷', 'MU': '🇲🇺', 'YT': '🇾🇹', 'MX': '🇲🇽', 'FM': '🇫🇲', 'MD': '🇲🇩',
+      'MC': '🇲🇨', 'MN': '🇲🇳', 'ME': '🇲🇪', 'MS': '��🇸', 'MA': '��🇦', 'MZ': '🇲🇿', 'MM': '🇲🇲', 'NA': '🇳🇦',
+      'NR': '🇳🇷', 'NP': '🇳🇵', 'NL': '🇳🇱', 'NC': '🇳🇨', 'NZ': '🇳🇿', 'NI': '🇳🇮', 'NE': '🇳🇪', 'NG': '🇳🇬',
+      'NU': '🇳🇺', 'NF': '🇳🇫', 'MP': '🇲🇵', 'NO': '🇳🇴', 'OM': '🇴🇲', 'PK': '🇵🇰', 'PW': '🇵🇼', 'PS': '🇵🇸',
+      'PA': '🇵🇦', 'PG': '🇵🇬', 'PY': '🇵🇾', 'PE': '�🇪', 'PH': '🇵🇭', 'PN': '🇵🇳', 'PL': '🇵🇱', 'PT': '🇵🇹',
+      'PR': '🇵🇷', 'QA': '🇶�🇦', 'RE': '��🇪', 'RO': '🇷🇴', 'RU': '🇷🇺', 'RW': '🇷🇼', 'BL': '🇧🇱', 'SH': '🇸🇭',
+      'KN': '🇰🇳', 'LC': '🇱🇨', 'MF': '🇲🇫', 'PM': '🇵🇲', 'VC': '🇻🇨', 'WS': '🇼🇸', 'SM': '🇸🇲', 'ST': '🇸🇹',
+      'SA': '🇸🇦', 'SN': '🇸🇳', 'RS': '🇷🇸', 'SC': '🇸🇨', 'SL': '🇸🇱', 'SG': '🇸🇬', 'SX': '🇸🇽', 'SK': '🇸🇰',
+      'SI': '🇸🇮', 'SB': '🇸🇧', 'SO': '🇸🇴', 'ZA': '🇿🇦', 'GS': '🇬🇸', 'SS': '🇸🇸', 'ES': '🇪🇸', 'LK': '🇱🇰',
+      'SD': '🇸🇩', 'SR': '🇸🇷', 'SJ': '🇸🇯', 'SZ': '🇸🇿', 'SE': '🇸🇪', 'CH': '🇨🇭', 'SY': '🇸🇾', 'TW': '🇹🇼',
+      'TJ': '🇹🇯', 'TZ': '🇹🇿', 'TH': '🇹🇭', 'TL': '🇹🇱', 'TG': '🇹🇬', 'TK': '🇹🇰', 'TO': '🇹🇴', 'TT': '🇹🇹',
+      'TN': '🇹🇳', 'TR': '🇹🇷', 'TM': '🇹🇲', 'TC': '🇹🇨', 'TV': '🇹🇻', 'UG': '🇺🇬', 'UA': '🇺🇦', 'AE': '🇦🇪',
+      'GB': '🇬🇧', 'US': '🇺🇸', 'UM': '🇺🇲', 'UY': '🇺🇾', 'UZ': '🇺🇿', 'VU': '🇻🇺', 'VE': '🇻🇪', 'VN': '🇻🇳',
+      'VI': '🇻🇮', 'WF': '🇼🇫', 'EH': '🇪🇭', 'YE': '🇾🇪', 'ZM': '🇿🇲', 'ZW': '🇿🇼'
     };
 
     // Return special flag if it exists
@@ -275,7 +287,7 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
       return specialFlags[countryCode];
     }
 
-    // Generate flag emoji from country code for other countries
+    // Fallback to algorithmic generation for any missing codes
     const codePoints = countryCode
       .toUpperCase()
       .split('')
@@ -361,7 +373,7 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
               <h2 className="location" aria-label={`Location: ${weather.location}, ${weather.countryName}`}>
                 <span className="country-flag" aria-hidden="true">
                   {getCountryFlag(weather.country)}
-                </span> {weather.location}, {weather.country}
+                </span> {weather.location}, {weather.countryName}
               </h2>
               <p className="description" aria-label={`Weather condition: ${weather.description}`}>
                 {capitalize(weather.description)}

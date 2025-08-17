@@ -17,8 +17,21 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ isVisible, o
     { code: 'es-ES', name: 'Español', flag: '🇪🇸' },
     { code: 'fr-FR', name: 'Français', flag: '🇫🇷' },
     { code: 'de-DE', name: 'Deutsch', flag: '🇩🇪' },
+    { code: 'it-IT', name: 'Italiano', flag: '🇮🇹' },
+    { code: 'pt-BR', name: 'Português (BR)', flag: '🇧🇷' },
+    { code: 'ru-RU', name: 'Русский', flag: '🇷🇺' },
     { code: 'ja-JP', name: '日本語', flag: '🇯🇵' },
-    { code: 'zh-CN', name: '中文', flag: '🇨🇳' }
+    { code: 'zh-CN', name: '中文', flag: '🇨🇳' },
+    { code: 'ko-KR', name: '한국어', flag: '🇰🇷' },
+    { code: 'ar-SA', name: 'العربية', flag: '🇸🇦' },
+    { code: 'hi-IN', name: 'हिन्दी', flag: '🇮🇳' },
+    { code: 'tr-TR', name: 'Türkçe', flag: '🇹🇷' },
+    { code: 'nl-NL', name: 'Nederlands', flag: '🇳🇱' },
+    { code: 'pl-PL', name: 'Polski', flag: '🇵🇱' },
+    { code: 'sv-SE', name: 'Svenska', flag: '🇸🇪' },
+    { code: 'th-TH', name: 'ไทย', flag: '🇹🇭' },
+    { code: 'vi-VN', name: 'Tiếng Việt', flag: '🇻🇳' },
+    { code: 'bn-BD', name: 'বাংলা', flag: '🇧🇩' }
   ];
 
   const handleLanguageChange = (locale: Locale) => {
