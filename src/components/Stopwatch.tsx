@@ -146,16 +146,18 @@ export const Stopwatch: React.FC<StopwatchProps> = ({ isActive }) => {
           </div>
           <div className="laps-list">
             {laps.map((lapTime, index) => {
-              const isBeest = lapTime === getBestLap();
+              const isBest = lapTime === getBestLap();
               const isWorst = lapTime === getWorstLap() && getBestLap() !== getWorstLap();
               
               return (
                 <div 
                   key={index} 
-                  className={`lap-item ${isBeest ? 'best' : ''} ${isWorst ? 'worst' : ''}`}
+                  className={`lap-item ${isBest ? 'best' : ''} ${isWorst ? 'worst' : ''}`}
                 >
                   <span className="lap-number">Lap {index + 1}</span>
                   <span className="lap-time">{formatTime(lapTime)}</span>
+                  {isBest && <span className="lap-badge">🏆</span>}
+                  {isWorst && <span className="lap-badge">🐌</span>}
                 </div>
               );
             })}
