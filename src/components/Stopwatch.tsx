@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useI18nContext } from '../hooks/useI18n';
 import './Stopwatch.css';
 
 interface StopwatchProps {
@@ -6,6 +7,7 @@ interface StopwatchProps {
 }
 
 export const Stopwatch: React.FC<StopwatchProps> = ({ isActive }) => {
+  const { t } = useI18nContext();
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [laps, setLaps] = useState<number[]>([]);
@@ -79,11 +81,11 @@ export const Stopwatch: React.FC<StopwatchProps> = ({ isActive }) => {
         
         <div className="status-indicator" aria-live="polite">
           {isRunning ? (
-            <span className="running">⏱️ Running</span>
+            <span className="running">⏱️ {t('running')}</span>
           ) : time > 0 ? (
-            <span className="paused">⏸️ Paused</span>
+            <span className="paused">⏸️ {t('paused')}</span>
           ) : (
-            <span className="ready">⏱️ Ready</span>
+            <span className="ready">⏱️ {t('ready')}</span>
           )}
         </div>
       </div>
@@ -94,17 +96,17 @@ export const Stopwatch: React.FC<StopwatchProps> = ({ isActive }) => {
             <button
               className="start-btn"
               onClick={time === 0 ? handleStart : handleStart}
-              aria-label={time === 0 ? "Start stopwatch" : "Resume stopwatch"}
+              aria-label={time === 0 ? t('start') : t('resume')}
             >
-              {time === 0 ? 'Start' : 'Resume'}
+              {time === 0 ? t('start') : t('resume')}
             </button>
           ) : (
             <button
               className="stop-btn"
               onClick={handleStop}
-              aria-label="Stop stopwatch"
+              aria-label={t('stop')}
             >
-              Stop
+              {t('stop')}
             </button>
           )}
           
@@ -112,9 +114,9 @@ export const Stopwatch: React.FC<StopwatchProps> = ({ isActive }) => {
             className="reset-btn"
             onClick={handleReset}
             disabled={time === 0 && laps.length === 0}
-            aria-label="Reset stopwatch"
+            aria-label={t('reset')}
           >
-            Reset
+            {t('reset')}
           </button>
         </div>
 
@@ -122,25 +124,25 @@ export const Stopwatch: React.FC<StopwatchProps> = ({ isActive }) => {
           <button
             className="lap-btn"
             onClick={handleLap}
-            aria-label="Record lap time"
+            aria-label={t('lap')}
           >
-            Lap
+            {t('lap')}
           </button>
         )}
       </div>
 
       {laps.length > 0 && (
         <div className="laps-section" aria-label="Lap times">
-          <h3>Lap Times</h3>
+          <h3>{t('lap_times')}</h3>
           <div className="laps-stats">
             {getBestLap() !== null && (
               <p className="best-lap">
-                🏆 Best: {formatTime(getBestLap()!)}
+                🏆 {t('best')}: {formatTime(getBestLap()!)}
               </p>
             )}
             {getWorstLap() !== null && getBestLap() !== getWorstLap() && (
               <p className="worst-lap">
-                🐌 Worst: {formatTime(getWorstLap()!)}
+                🐌 {t('worst')}: {formatTime(getWorstLap()!)}
               </p>
             )}
           </div>
@@ -154,7 +156,7 @@ export const Stopwatch: React.FC<StopwatchProps> = ({ isActive }) => {
                   key={index} 
                   className={`lap-item ${isBest ? 'best' : ''} ${isWorst ? 'worst' : ''}`}
                 >
-                  <span className="lap-number">Lap {index + 1}</span>
+                  <span className="lap-number">{t('lap')} {index + 1}</span>
                   <span className="lap-time">{formatTime(lapTime)}</span>
                   {isBest && <span className="lap-badge">🏆</span>}
                   {isWorst && <span className="lap-badge">🐌</span>}

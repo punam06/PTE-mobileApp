@@ -71,7 +71,21 @@ export const translations: Record<Locale, Record<string, string>> = {
     'resume': 'Resume',
     'lap': 'Lap',
     'best': 'Best',
-    'worst': 'Worst'
+    'worst': 'Worst',
+    'running': 'Running',
+    'paused': 'Paused',
+    'ready': 'Ready',
+    'lap_times': 'Lap Times',
+    'alarm_label': 'Alarm Label',
+    'alarm_label_placeholder': 'e.g., Wake up, Meeting, etc.',
+    'add_alarm': 'Add Alarm',
+    'active_alarms': 'Active Alarms',
+    'no_alarms_set': 'No alarms set',
+    'on': 'On',
+    'off': 'Off',
+    'enable': 'Enable',
+    'disable': 'Disable',
+    'delete': 'Delete'
   },
   'en-GB': {
     'weather_today': 'Weather Today',
@@ -99,7 +113,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     'resume': 'Resume',
     'lap': 'Lap',
     'best': 'Best',
-    'worst': 'Worst'
+    'worst': 'Worst',
+    'running': 'Running',
+    'paused': 'Paused',
+    'ready': 'Ready',
+    'lap_times': 'Lap Times'
   },
   'es-ES': {
     'weather_today': 'Tiempo Hoy',
@@ -127,7 +145,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     'resume': 'Reanudar',
     'lap': 'Vuelta',
     'best': 'Mejor',
-    'worst': 'Peor'
+    'worst': 'Peor',
+    'running': 'Corriendo',
+    'paused': 'Pausado',
+    'ready': 'Listo',
+    'lap_times': 'Tiempos de Vuelta'
   },
   'fr-FR': {
     'weather_today': "Météo Aujourd'hui",
@@ -155,7 +177,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     'resume': 'Reprendre',
     'lap': 'Tour',
     'best': 'Meilleur',
-    'worst': 'Pire'
+    'worst': 'Pire',
+    'running': 'En marche',
+    'paused': 'En pause',
+    'ready': 'Prêt',
+    'lap_times': 'Temps de Tour'
   },
   'de-DE': {
     'weather_today': 'Wetter Heute',
@@ -183,7 +209,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     'resume': 'Fortsetzen',
     'lap': 'Runde',
     'best': 'Beste',
-    'worst': 'Schlechteste'
+    'worst': 'Schlechteste',
+    'running': 'Läuft',
+    'paused': 'Pausiert',
+    'ready': 'Bereit',
+    'lap_times': 'Rundenzeiten'
   },
   'ja-JP': {
     'weather_today': '今日の天気',
@@ -211,7 +241,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     'resume': '再開',
     'lap': 'ラップ',
     'best': '最高',
-    'worst': '最低'
+    'worst': '最低',
+    'running': '実行中',
+    'paused': '一時停止',
+    'ready': '準備完了',
+    'lap_times': 'ラップタイム'
   },
   'zh-CN': {
     'weather_today': '今日天气',
@@ -239,7 +273,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     'resume': '继续',
     'lap': '圈',
     'best': '最佳',
-    'worst': '最差'
+    'worst': '最差',
+    'running': '运行中',
+    'paused': '暂停',
+    'ready': '就绪',
+    'lap_times': '圈数时间'
   },
   // Additional languages - using English translations initially
   'ar-SA': {
@@ -604,7 +642,21 @@ export const translations: Record<Locale, Record<string, string>> = {
     'resume': 'আবার শুরু',
     'lap': 'ল্যাপ',
     'best': 'সেরা',
-    'worst': 'সবচেয়ে খারাপ'
+    'worst': 'সবচেয়ে খারাপ',
+    'running': 'চালু',
+    'paused': 'বিরতি',
+    'ready': 'প্রস্তুত',
+    'lap_times': 'ল্যাপের সময়',
+    'alarm_label': 'অ্যালার্মের নাম',
+    'alarm_label_placeholder': 'যেমন: ঘুম থেকে ওঠা, মিটিং ইত্যাদি',
+    'add_alarm': 'অ্যালার্ম যোগ করুন',
+    'active_alarms': 'সক্রিয় অ্যালার্ম',
+    'no_alarms_set': 'কোনো অ্যালার্ম সেট করা হয়নি',
+    'on': 'চালু',
+    'off': 'বন্ধ',
+    'enable': 'চালু করুন',
+    'disable': 'বন্ধ করুন',
+    'delete': 'মুছে ফেলুন'
   }
 };
 
