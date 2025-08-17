@@ -1,26 +1,35 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { AlarmClock } from './AlarmClock';
+import { I18nProvider } from '../hooks/useI18n';
+
+const renderWithI18n = (component: React.ReactElement) => {
+  return render(
+    <I18nProvider>
+      {component}
+    </I18nProvider>
+  );
+};
 
 describe('AlarmClock Component', () => {
   test('renders when active', () => {
-    render(<AlarmClock isActive={true} />);
+    renderWithI18n(<AlarmClock isActive={true} />);
     expect(screen.getByRole('main', { name: /alarm clock/i })).toBeInTheDocument();
   });
 
   test('does not render when inactive', () => {
-    render(<AlarmClock isActive={false} />);
+    renderWithI18n(<AlarmClock isActive={false} />);
     expect(screen.queryByRole('main', { name: /alarm clock/i })).not.toBeInTheDocument();
   });
 
   test('displays current time', () => {
-    render(<AlarmClock isActive={true} />);
+    renderWithI18n(<AlarmClock isActive={true} />);
     // Should display some form of time - we can't test exact time due to timing
     expect(screen.getByText(/\d{1,2}:\d{2}/)).toBeInTheDocument();
   });
 
   test('allows setting alarm time', () => {
-    render(<AlarmClock isActive={true} />);
+    renderWithI18n(<AlarmClock isActive={true} />);
     
     const timeInput = screen.getByLabelText(/alarm time/i);
     const setButton = screen.getByRole('button', { name: /set alarm/i });
@@ -33,14 +42,14 @@ describe('AlarmClock Component', () => {
   });
 
   test('shows set alarm button as disabled when no time is entered', () => {
-    render(<AlarmClock isActive={true} />);
+    renderWithI18n(<AlarmClock isActive={true} />);
     
     const setButton = screen.getByRole('button', { name: /set alarm/i });
     expect(setButton).toBeDisabled();
   });
 
   test('allows canceling alarm', () => {
-    render(<AlarmClock isActive={true} />);
+    renderWithI18n(<AlarmClock isActive={true} />);
     
     const timeInput = screen.getByLabelText(/alarm time/i);
     const setButton = screen.getByRole('button', { name: /set alarm/i });

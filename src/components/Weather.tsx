@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useI18nContext } from '../hooks/useI18n';
 import './Weather.css';
 
 interface WeatherProps {
@@ -23,6 +24,7 @@ interface WeatherError {
 }
 
 export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
+  const { t, formatTime: formatTimeI18n, formatTemperature, formatWindSpeed, config } = useI18nContext();
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<WeatherError | null>(null);
@@ -42,7 +44,7 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
           lat,
           lon,
           appid: API_KEY,
-          units: 'metric'
+          units: config.temperatureUnit === 'imperial' ? 'imperial' : 'metric'
         },
         timeout: 10000
       });
@@ -99,7 +101,7 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
         params: {
           q: city,
           appid: API_KEY,
-          units: 'metric'
+          units: config.temperatureUnit === 'imperial' ? 'imperial' : 'metric'
         },
         timeout: 10000
       });
@@ -194,14 +196,6 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
     return iconMap[iconCode] || '🌤️';
   };
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', {
-      hour12: true,
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
   const capitalize = (str: string) => {
     return str.replace(/\b\w/g, char => char.toUpperCase());
   };
@@ -212,12 +206,12 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
     <div className="weather" role="main" aria-label="Weather Information">
       <div className="weather-container">
         <div className="weather-header">
-          <h1>Weather Today</h1>
+          <h1>{t('weather_today')}</h1>
           <button 
             className="refresh-btn"
             onClick={refreshWeather}
             disabled={loading}
-            aria-label="Refresh weather data"
+            aria-label={t('refresh')}
           >
             {loading ? '⏳' : '🔄'}
           </button>
@@ -226,14 +220,14 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
         {loading && (
           <div className="weather-loading" aria-live="polite">
             <div className="loading-spinner"></div>
-            <p>Loading weather data...</p>
+            <p>{t('loading_weather')}</p>
           </div>
         )}
 
         {error && !weather && (
           <div className="weather-error" role="alert">
             <div className="error-content">
-              <h3>⚠️ Weather Unavailable</h3>
+              <h3>⚠️ {t('weather_unavailable')}</h3>
               <p>{error.message}</p>
               {error.code === 'API_KEY_ERROR' && (
                 <div className="error-help">
@@ -249,9 +243,9 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
             <button 
               className="retry-btn"
               onClick={refreshWeather}
-              aria-label="Retry loading weather"
+              aria-label={t('try_again')}
             >
-              Try Again
+              {t('try_again')}
             </button>
           </div>
         )}
@@ -260,7 +254,7 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
           <div className="weather-content">
             {error && error.code === 'DEMO_MODE' && (
               <div className="demo-notice">
-                <p>📍 Showing demo weather data</p>
+                <p>📍 {t('demo_data')}</p>
               </div>
             )}
             
@@ -269,11 +263,11 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
                 {getWeatherIcon(weather.icon)}
               </div>
               <div className="weather-temp">
-                <span className="temperature" aria-label={`Temperature ${weather.temperature} degrees celsius`}>
-                  {weather.temperature}°C
+                <span className="temperature" aria-label={`Temperature ${formatTemperature(weather.temperature)}`}>
+                  {formatTemperature(weather.temperature)}
                 </span>
                 <span className="feels-like">
-                  Feels like {weather.feelsLike}°C
+                  {t('feels_like')} {formatTemperature(weather.feelsLike)}
                 </span>
               </div>
             </div>
@@ -289,20 +283,20 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
 
             <div className="weather-details">
               <div className="detail-item">
-                <span className="detail-label">Humidity</span>
-                <span className="detail-value" aria-label={`Humidity ${weather.humidity} percent`}>
+                <span className="detail-label">{t('humidity')}</span>
+                <span className="detail-value" aria-label={`${t('humidity')} ${weather.humidity} percent`}>
                   💧 {weather.humidity}%
                 </span>
               </div>
               <div className="detail-item">
-                <span className="detail-label">Wind</span>
-                <span className="detail-value" aria-label={`Wind speed ${weather.windSpeed} meters per second`}>
-                  💨 {weather.windSpeed} m/s
+                <span className="detail-label">{t('wind')}</span>
+                <span className="detail-value" aria-label={`${t('wind')} speed ${formatWindSpeed(weather.windSpeed)}`}>
+                  💨 {formatWindSpeed(weather.windSpeed)}
                 </span>
               </div>
               <div className="detail-item">
-                <span className="detail-label">Pressure</span>
-                <span className="detail-value" aria-label={`Atmospheric pressure ${weather.pressure} hectopascals`}>
+                <span className="detail-label">{t('pressure')}</span>
+                <span className="detail-value" aria-label={`${t('pressure')} ${weather.pressure} hectopascals`}>
                   📊 {weather.pressure} hPa
                 </span>
               </div>
@@ -310,7 +304,7 @@ export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
 
             {lastUpdated && (
               <div className="last-updated" aria-live="polite">
-                <p>Last updated: {formatTime(lastUpdated)}</p>
+                <p>{t('last_updated')}: {formatTimeI18n(lastUpdated)}</p>
               </div>
             )}
           </div>

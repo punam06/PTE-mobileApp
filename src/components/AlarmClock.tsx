@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useI18nContext } from '../hooks/useI18n';
 import './AlarmClock.css';
 
 interface AlarmClockProps {
@@ -6,6 +7,7 @@ interface AlarmClockProps {
 }
 
 export const AlarmClock: React.FC<AlarmClockProps> = ({ isActive }) => {
+  const { t, formatTime: formatTimeI18n, formatDate: formatDateI18n } = useI18nContext();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [alarmTime, setAlarmTime] = useState('');
   const [isAlarmSet, setIsAlarmSet] = useState(false);
@@ -54,54 +56,39 @@ export const AlarmClock: React.FC<AlarmClockProps> = ({ isActive }) => {
     setIsAlarmSet(false);
   };
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', {
-      hour12: true,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
-  };
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
   if (!isActive) return null;
 
   return (
     <div className="alarm-clock" role="main" aria-label="Alarm Clock">
       <div className="clock-display">
         <h1 className="current-time" aria-live="polite">
-          {formatTime(currentTime)}
+          {formatTimeI18n(currentTime)}
         </h1>
         <p className="current-date" aria-live="polite">
-          {formatDate(currentTime)}
+          {formatDateI18n(currentTime)}
         </p>
       </div>
 
       {isAlarmRinging && (
         <div className="alarm-ringing" role="alert">
-          <h2>🔔 ALARM!</h2>
+          <div className="finished-content">
+            <h2>🔔 {t('times_up')}</h2>
+            <div className="finished-animation">🎉</div>
+          </div>
           <button 
             className="stop-alarm-btn"
             onClick={handleStopAlarm}
-            aria-label="Stop alarm"
+            aria-label={t('stop_alarm')}
           >
-            Stop Alarm
+            {t('stop_alarm')}
           </button>
         </div>
       )}
 
       <div className="alarm-controls">
-        <h3>Set Alarm</h3>
+        <h3>{t('set_alarm')}</h3>
         <div className="alarm-input-group">
-          <label htmlFor="alarm-time">Alarm Time:</label>
+          <label htmlFor="alarm-time">{t('alarm_time')}:</label>
           <input
             id="alarm-time"
             type="time"
@@ -118,21 +105,21 @@ export const AlarmClock: React.FC<AlarmClockProps> = ({ isActive }) => {
               className="set-alarm-btn"
               onClick={handleSetAlarm}
               disabled={!alarmTime}
-              aria-label="Set alarm"
+              aria-label={t('set_alarm')}
             >
-              Set Alarm
+              {t('set_alarm')}
             </button>
           ) : (
             <div className="alarm-set-info">
               <p id="alarm-status" aria-live="polite">
-                ⏰ Alarm set for {alarmTime}
+                ⏰ {t('alarm_set_for')} {alarmTime}
               </p>
               <button
                 className="cancel-alarm-btn"
                 onClick={() => setIsAlarmSet(false)}
-                aria-label="Cancel alarm"
+                aria-label={t('cancel_alarm')}
               >
-                Cancel Alarm
+                {t('cancel_alarm')}
               </button>
             </div>
           )}

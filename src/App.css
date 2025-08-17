@@ -48,6 +48,14 @@ body {
   background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #6c5ce7 100%);
 }
 
+/* Language selector positioning */
+.language-selector-container {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
 /* Orientation debug indicator */
 .orientation-debug {
   position: fixed;
