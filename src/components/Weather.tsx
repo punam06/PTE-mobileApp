@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useI18nContext } from '../hooks/useI18n';
 import { countryCodeToName } from '../utils/countryList';
@@ -10,8 +10,8 @@ interface WeatherProps {
 
 interface WeatherData {
   location: string;
-  country: string; // ISO country code
-  countryName: string; // Full country name
+  country: string;
+  countryName: string;
   temperature: number;
   description: string;
   icon: string;
@@ -27,443 +27,279 @@ interface WeatherError {
 }
 
 export const Weather: React.FC<WeatherProps> = ({ isActive }) => {
-  const { t, formatTime: formatTimeI18n, formatTemperature, formatWindSpeed, config } = useI18nContext();
+  const { t, config, formatTemperature, formatWindSpeed } = useI18nContext();
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<WeatherError | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [locationInput, setLocationInput] = useState('');
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
-  // Updated API key for OpenWeatherMap - if this fails, we'll provide demo data
-  const API_KEY = 'b8b95cc8b3b7c14a8b0c5b6c3c7e1d2f'; // Backup key
-  const FALLBACK_API_KEY = '27b5e7bcaaea4262d9f45296b32ba71c'; // Original key
-  const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
-  
-  // Force HTTPS for API requests to avoid mixed content issues
-  const secureBaseUrl = BASE_URL;
+  const API_KEY = '1bb77cb7d7934e15a4a175853251808';
+  const BASE_URL = 'https://api.weatherapi.com/v1/current.json';
 
-  const fetchWeatherByCoords = async (lat: number, lon: number) => {
-    try {
-      setLoading(true);
-      setError(null);
-      console.log(`Fetching weather for coordinates: ${lat}, ${lon}`);
-
-      // Try with primary API key first
-      let response;
-      try {
-        response = await axios.get(secureBaseUrl, {
-          params: {
-            lat,
-            lon,
-            appid: API_KEY,
-            units: config.temperatureUnit === 'imperial' ? 'imperial' : 'metric'
-          },
-          timeout: 10000
-        });
-      } catch (primaryError: any) {
-        console.log('Primary API key failed, trying fallback...');
-        // Try with fallback API key
-        response = await axios.get(secureBaseUrl, {
-          params: {
-            lat,
-            lon,
-            appid: FALLBACK_API_KEY,
-            units: config.temperatureUnit === 'imperial' ? 'imperial' : 'metric'
-          },
-          timeout: 10000
-        });
-      }
-
-      const data = response.data;
-      const weatherData: WeatherData = {
-        location: data.name,
-        country: data.sys.country,
-        countryName: countryCodeToName[data.sys.country] || data.sys.country, // Use full country name from our mapping
-        temperature: Math.round(data.main.temp),
-        description: data.weather[0].description,
-        icon: data.weather[0].icon,
-        humidity: data.main.humidity,
-        windSpeed: data.wind.speed,
-        feelsLike: Math.round(data.main.feels_like),
-        pressure: data.main.pressure
-      };
-
-      setWeather(weatherData);
-      setLastUpdated(new Date());
-    } catch (err: any) {
-      console.error('Weather fetch error:', err);
-      
-      if (err.response?.status === 401) {
-        console.log('API key error, showing demo data');
-        showDemoWeather();
-      } else if (err.response?.status === 429) {
-        setError({ 
-          message: 'Rate limit exceeded. Showing demo weather data.',
-          code: 'RATE_LIMIT'
-        });
-        showDemoWeather();
-      } else if (err.code === 'ECONNABORTED') {
-        setError({ 
-          message: 'Request timeout. Showing demo weather data.',
-          code: 'TIMEOUT'
-        });
-        showDemoWeather();
-      } else {
-        console.log('General error, showing demo weather');
-        showDemoWeather();
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const showDemoWeather = () => {
-    const demoWeather: WeatherData = {
-      location: 'Demo City',
-      country: 'US',
-      countryName: 'United States',
-      temperature: 22,
-      description: 'partly cloudy',
-      icon: '02d',
-      humidity: 65,
-      windSpeed: 3.5,
-      feelsLike: 25,
-      pressure: 1013
-    };
-    
-    setWeather(demoWeather);
-    setLastUpdated(new Date());
-    setError({ 
-      message: t('demo_data'),
-      code: 'DEMO_MODE'
-    });
-  };
-
-  const fetchWeatherByCity = async (city: string = 'London') => {
-    try {
-      setLoading(true);
-      setError(null);
-      console.log(`Fetching weather for city: ${city}`);
-
-      // Try with primary API key first
-      let response;
-      try {
-        response = await axios.get(secureBaseUrl, {
-          params: {
-            q: city,
-            appid: API_KEY,
-            units: config.temperatureUnit === 'imperial' ? 'imperial' : 'metric'
-          },
-          timeout: 10000
-        });
-      } catch (primaryError: any) {
-        console.log('Primary API key failed for city, trying fallback...');
-        // Try with fallback API key
-        response = await axios.get(secureBaseUrl, {
-          params: {
-            q: city,
-            appid: FALLBACK_API_KEY,
-            units: config.temperatureUnit === 'imperial' ? 'imperial' : 'metric'
-          },
-          timeout: 10000
-        });
-      }
-
-      const data = response.data;
-      const weatherData: WeatherData = {
-        location: data.name,
-        country: data.sys.country,
-        countryName: countryCodeToName[data.sys.country] || data.sys.country,
-        temperature: Math.round(data.main.temp),
-        description: data.weather[0].description,
-        icon: data.weather[0].icon,
-        humidity: data.main.humidity,
-        windSpeed: data.wind.speed,
-        feelsLike: Math.round(data.main.feels_like),
-        pressure: data.main.pressure
-      };
-
-      setWeather(weatherData);
-      setLastUpdated(new Date());
-    } catch (err: any) {
-      console.error('Weather fetch error:', err);
-      setError({ 
-        message: 'Unable to fetch live weather data. Showing demo weather.',
-        code: 'API_ERROR'
-      });
-      showDemoWeather();
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getUserLocation = () => {
-    console.log('Requesting user location...');
-    if (!navigator.geolocation) {
-      console.error('Geolocation API not available');
-      setError({ 
-        message: 'Geolocation is not supported by this browser. Please enable location services.',
-        code: 'NO_GEOLOCATION'
-      });
-      // Fall back to default city since geolocation is unavailable
-      fetchWeatherByCity('New York');
+  const fetchWeatherByLocation = async (location: string) => {
+    if (!location.trim()) {
+      setError({ message: t('enter_location') });
       return;
     }
 
-    setLoading(true);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        console.log(`Location obtained: ${latitude}, ${longitude}`);
-        fetchWeatherByCoords(latitude, longitude);
-      },
-      (error) => {
-        console.error('Geolocation error:', error);
-        // More detailed error messages based on the error code
-        if (error.code === 1) {
-          console.error('Permission denied:', error);
-          setError({ 
-            message: 'Location permission denied. Showing weather for a default location.',
-            code: 'PERMISSION_DENIED'
-          });
-          // Fall back to a default city if permission denied
-          fetchWeatherByCity('New York');
-        } else if (error.code === 2) {
-          console.error('Position unavailable:', error);
-          setError({ 
-            message: 'Location unavailable. Showing weather for a default location.',
-            code: 'POSITION_UNAVAILABLE'
-          });
-          fetchWeatherByCity('London');
-        } else if (error.code === 3) {
-          console.error('Timeout:', error);
-          setError({ 
-            message: 'Location request timed out. Showing weather for a default location.',
-            code: 'TIMEOUT'
-          });
-          fetchWeatherByCity('Tokyo');
-        } else {
-          console.error('Unknown error:', error);
-          setError({ 
-            message: 'Unable to get your location. Showing weather for a default location.',
-            code: 'LOCATION_ERROR'
-          });
-          fetchWeatherByCity('Sydney');
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await axios.get(BASE_URL, {
+        params: {
+          key: API_KEY,
+          q: location,
+          aqi: 'yes'
+        },
+        timeout: 10000
+      });
+
+      if (response.data) {
+        const data = response.data;
+        const countryName = countryCodeToName[data.location.country as keyof typeof countryCodeToName] || data.location.country;
+        
+        const weatherData: WeatherData = {
+          location: data.location.name,
+          country: data.location.country,
+          countryName: countryName,
+          temperature: Math.round(config.temperatureUnit === 'imperial' ? data.current.temp_f : data.current.temp_c),
+          description: data.current.condition.text,
+          icon: data.current.condition.icon,
+          humidity: data.current.humidity,
+          windSpeed: config.temperatureUnit === 'imperial' ? data.current.wind_mph : data.current.wind_kph,
+          feelsLike: Math.round(config.temperatureUnit === 'imperial' ? data.current.feelslike_f : data.current.feelslike_c),
+          pressure: data.current.pressure_mb
+        };
+
+        setWeather(weatherData);
+        setLastUpdated(new Date());
+        
+        if (!searchHistory.includes(location)) {
+          setSearchHistory(prev => [location, ...prev.slice(0, 4)]);
         }
-      },
-      { 
-        timeout: 15000, 
-        enableHighAccuracy: true,
-        maximumAge: 0 // Force fresh position
       }
-    );
-  };
-
-  const refreshWeather = () => {
-    getUserLocation();
-  };
-
-  useEffect(() => {
-    if (isActive) {
-      // Always try to get user location when the weather component becomes active
-      getUserLocation();
+    } catch (err: any) {
+      console.error('Weather API Error:', err);
       
-      // Set up periodic refresh when component is active
-      const refreshInterval = setInterval(() => {
-        if (isActive) {
-          refreshWeather();
-        }
-      }, 300000); // Refresh every 5 minutes when active
-      
-      return () => clearInterval(refreshInterval);
+      if (err.response?.status === 400) {
+        setError({ 
+          message: t('location_not_found'),
+          code: 'NOT_FOUND'
+        });
+      } else if (err.response?.status === 401 || err.response?.status === 403) {
+        setError({ 
+          message: t('api_key_error'),
+          code: 'API_KEY_ERROR'
+        });
+      } else if (err.response?.status === 429) {
+        setError({ 
+          message: t('api_limit_reached'),
+          code: 'RATE_LIMITED'
+        });
+      } else {
+        setError({ 
+          message: t('weather_connection_error'),
+          code: 'CONNECTION_ERROR'
+        });
+      }
+    } finally {
+      setLoading(false);
     }
-  }, [isActive]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const getWeatherIcon = (iconCode: string) => {
-    const iconMap: { [key: string]: string } = {
-      '01d': '☀️', '01n': '🌙',
-      '02d': '⛅', '02n': '☁️',
-      '03d': '☁️', '03n': '☁️',
-      '04d': '☁️', '04n': '☁️',
-      '09d': '🌧️', '09n': '🌧️',
-      '10d': '🌦️', '10n': '🌧️',
-      '11d': '⛈️', '11n': '⛈️',
-      '13d': '🌨️', '13n': '🌨️',
-      '50d': '🌫️', '50n': '🌫️'
-    };
-    return iconMap[iconCode] || '🌤️';
   };
 
-  const capitalize = (str: string) => {
-    return str.replace(/\b\w/g, char => char.toUpperCase());
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (locationInput.trim()) {
+      fetchWeatherByLocation(locationInput.trim());
+    }
   };
 
-  // Function to get country flag emoji from country code
-  const getCountryFlag = (countryCode: string) => {
-    // Comprehensive special flags mapping (all supported countries)
-    const specialFlags: Record<string, string> = {
-      'AF': '🇦🇫', 'AL': '🇦🇱', 'DZ': '🇩🇿', 'AS': '🇦🇸', 'AD': '🇦🇩', 'AO': '🇦🇴', 'AI': '🇦🇮', 'AQ': '🇦🇶',
-      'AG': '🇦🇬', 'AR': '🇦🇷', 'AM': '🇦🇲', 'AW': '🇦🇼', 'AU': '🇦🇺', 'AT': '🇦🇹', 'AZ': '🇦🇿', 'BS': '🇧🇸',
-      'BH': '🇧🇭', 'BD': '🇧🇩', 'BB': '🇧🇧', 'BY': '🇧🇾', 'BE': '🇧🇪', 'BZ': '🇧🇿', 'BJ': '��', 'BM': '🇧🇲',
-      'BT': '��', 'BO': '🇧🇴', 'BA': '🇧🇦', 'BW': '🇧🇼', 'BR': '🇧🇷', 'IO': '��', 'VG': '🇻🇬', 'BN': '🇧🇳',
-      'BG': '��🇬', 'BF': '🇧🇫', 'BI': '🇧🇮', 'KH': '🇰🇭', 'CM': '🇨🇲', 'CA': '🇨🇦', 'CV': '🇨🇻', 'KY': '🇰🇾',
-      'CF': '🇨�', 'TD': '🇹🇩', 'CL': '🇨🇱', 'CN': '🇨🇳', 'CX': '🇨🇽', 'CC': '🇨🇨', 'CO': '🇨🇴', 'KM': '🇰🇲',
-      'CG': '🇨🇬', 'CD': '🇨🇩', 'CK': '🇨🇰', 'CR': '🇨🇷', 'CI': '🇨🇮', 'HR': '🇭🇷', 'CU': '�🇺', 'CW': '🇨🇼',
-      'CY': '��', 'CZ': '🇨🇿', 'DK': '🇩🇰', 'DJ': '🇩🇯', 'DM': '🇩🇲', 'DO': '🇩🇴', 'EC': '🇪🇨', 'EG': '🇪�',
-      'SV': '🇸🇻', 'GQ': '🇬🇶', 'ER': '🇪🇷', 'EE': '🇪�', 'ET': '🇪🇹', 'FK': '🇫🇰', 'FO': '🇫🇴', 'FJ': '🇫🇯',
-      'FI': '🇫🇮', 'FR': '🇫🇷', 'GF': '🇬🇫', 'PF': '🇵🇫', 'TF': '🇹🇫', 'GA': '🇬🇦', 'GM': '🇬🇲', 'GE': '🇬🇪',
-      'DE': '🇩🇪', 'GH': '🇬🇭', 'GI': '🇬🇮', 'GR': '🇬🇷', 'GL': '🇬🇱', 'GD': '🇬🇩', 'GP': '🇬🇵', 'GU': '🇬🇺',
-      'GT': '🇬🇹', 'GG': '🇬🇬', 'GN': '🇬🇳', 'GW': '🇬🇼', 'GY': '🇬🇾', 'HT': '🇭🇹', 'HM': '🇭🇲', 'VA': '🇻🇦',
-      'HN': '🇭🇳', 'HK': '🇭🇰', 'HU': '🇭🇺', 'IS': '🇮🇸', 'IN': '🇮🇳', 'ID': '🇮�', 'IR': '🇮🇷', 'IQ': '🇮🇶',
-      'IE': '🇮🇪', 'IM': '🇮🇲', 'IL': '🇮🇱', 'IT': '🇮🇹', 'JM': '🇯🇲', 'JP': '🇯🇵', 'JE': '🇯�', 'JO': '🇯🇴',
-      'KZ': '🇰🇿', 'KE': '🇰🇪', 'KI': '🇰🇮', 'KP': '🇰🇵', 'KR': '🇰🇷', 'KW': '🇰🇼', 'KG': '🇰�', 'LA': '🇱🇦',
-      'LV': '🇱🇻', 'LB': '🇱🇧', 'LS': '🇱🇸', 'LR': '�🇷', 'LY': '🇱🇾', 'LI': '🇱🇮', 'LT': '🇱🇹', 'LU': '🇱🇺',
-      'MO': '🇲🇴', 'MK': '🇲🇰', 'MG': '🇲🇬', 'MW': '🇲🇼', 'MY': '🇲🇾', 'MV': '🇲🇻', 'ML': '🇲🇱', 'MT': '🇲🇹',
-      'MH': '🇲🇭', 'MQ': '🇲🇶', 'MR': '🇲🇷', 'MU': '🇲🇺', 'YT': '🇾🇹', 'MX': '🇲🇽', 'FM': '🇫🇲', 'MD': '🇲🇩',
-      'MC': '🇲🇨', 'MN': '🇲🇳', 'ME': '🇲🇪', 'MS': '��🇸', 'MA': '��🇦', 'MZ': '🇲🇿', 'MM': '🇲🇲', 'NA': '🇳🇦',
-      'NR': '🇳🇷', 'NP': '🇳🇵', 'NL': '🇳🇱', 'NC': '🇳🇨', 'NZ': '🇳🇿', 'NI': '🇳🇮', 'NE': '🇳🇪', 'NG': '🇳🇬',
-      'NU': '🇳🇺', 'NF': '🇳🇫', 'MP': '🇲🇵', 'NO': '🇳🇴', 'OM': '🇴🇲', 'PK': '🇵🇰', 'PW': '🇵🇼', 'PS': '🇵🇸',
-      'PA': '🇵🇦', 'PG': '🇵🇬', 'PY': '🇵🇾', 'PE': '�🇪', 'PH': '🇵🇭', 'PN': '🇵🇳', 'PL': '🇵🇱', 'PT': '🇵🇹',
-      'PR': '🇵🇷', 'QA': '🇶�🇦', 'RE': '��🇪', 'RO': '🇷🇴', 'RU': '🇷🇺', 'RW': '🇷🇼', 'BL': '🇧🇱', 'SH': '🇸🇭',
-      'KN': '🇰🇳', 'LC': '🇱🇨', 'MF': '🇲🇫', 'PM': '🇵🇲', 'VC': '🇻🇨', 'WS': '🇼🇸', 'SM': '🇸🇲', 'ST': '🇸🇹',
-      'SA': '🇸🇦', 'SN': '🇸🇳', 'RS': '🇷🇸', 'SC': '🇸🇨', 'SL': '🇸🇱', 'SG': '🇸🇬', 'SX': '🇸🇽', 'SK': '🇸🇰',
-      'SI': '🇸🇮', 'SB': '🇸🇧', 'SO': '🇸🇴', 'ZA': '🇿🇦', 'GS': '🇬🇸', 'SS': '🇸🇸', 'ES': '🇪🇸', 'LK': '🇱🇰',
-      'SD': '🇸🇩', 'SR': '🇸🇷', 'SJ': '🇸🇯', 'SZ': '🇸🇿', 'SE': '🇸🇪', 'CH': '🇨🇭', 'SY': '🇸🇾', 'TW': '🇹🇼',
-      'TJ': '🇹🇯', 'TZ': '🇹🇿', 'TH': '🇹🇭', 'TL': '🇹🇱', 'TG': '🇹🇬', 'TK': '🇹🇰', 'TO': '🇹🇴', 'TT': '🇹🇹',
-      'TN': '🇹🇳', 'TR': '🇹🇷', 'TM': '🇹🇲', 'TC': '🇹🇨', 'TV': '🇹🇻', 'UG': '🇺🇬', 'UA': '🇺🇦', 'AE': '🇦🇪',
-      'GB': '🇬🇧', 'US': '🇺🇸', 'UM': '🇺🇲', 'UY': '🇺🇾', 'UZ': '🇺🇿', 'VU': '🇻🇺', 'VE': '🇻🇪', 'VN': '🇻🇳',
-      'VI': '🇻🇮', 'WF': '🇼🇫', 'EH': '🇪🇭', 'YE': '🇾🇪', 'ZM': '🇿🇲', 'ZW': '🇿🇼'
-    };
+  const handleHistoryClick = (location: string) => {
+    setLocationInput(location);
+    fetchWeatherByLocation(location);
+  };
 
-    // Return special flag if it exists
-    if (countryCode in specialFlags) {
-      return specialFlags[countryCode];
-    }
+  const clearHistory = () => {
+    setSearchHistory([]);
+  };
 
-    // Fallback to algorithmic generation for any missing codes
-    const codePoints = countryCode
-      .toUpperCase()
-      .split('')
-      .map(char => 127397 + char.charCodeAt(0));
-    
-    return String.fromCodePoint(...codePoints);
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: config.timeFormat === '12h'
+    });
   };
 
   if (!isActive) return null;
 
   return (
-    <div className="weather" role="main" aria-label="Weather Information">
-      <div className="weather-container">
+    <div className="weather-container">
+      <div className="weather-content">
         <div className="weather-header">
-          <h1>{t('weather_today')}</h1>
-          <button 
-            className="refresh-btn"
-            onClick={refreshWeather}
-            disabled={loading}
-            aria-label={t('refresh')}
-          >
-            {loading ? '⏳' : '🔄'}
-          </button>
+          <h2 className="weather-title">
+            Weather Today
+          </h2>
+        </div>
+
+        <div className="weather-search-section">
+          <form onSubmit={handleSearch} className="weather-search-form">
+            <div className="search-input-container">
+              <input
+                type="text"
+                value={locationInput}
+                onChange={(e) => setLocationInput(e.target.value)}
+                placeholder="Enter city or location..."
+                className="location-input"
+                disabled={loading}
+              />
+              <button 
+                type="submit" 
+                className="search-button"
+                disabled={loading || !locationInput.trim()}
+              >
+                {loading ? '⏳' : '🔍'}
+              </button>
+            </div>
+          </form>
+
+          {searchHistory.length > 0 && (
+            <div className="search-history">
+              <div className="history-header">
+                <span className="history-title">Recent Searches</span>
+                <button onClick={clearHistory} className="clear-history">
+                  Clear
+                </button>
+              </div>
+              <div className="history-items">
+                {searchHistory.map((location, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleHistoryClick(location)}
+                    className="history-item"
+                  >
+                    📍 {location}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {loading && (
-          <div className="weather-loading" aria-live="polite">
+          <div className="weather-loading">
             <div className="loading-spinner"></div>
-            <p>{t('loading_weather')}</p>
+            <p>Loading weather...</p>
           </div>
         )}
 
-        {error && !weather && (
-          <div className="weather-error" role="alert">
-            <div className="error-content">
-              <h3>⚠️ {t('weather_unavailable')}</h3>
-              <p>{error.message}</p>
-              {(error.code === 'PERMISSION_DENIED' || error.code === 'LOCATION_ERROR' || error.code === 'NO_GEOLOCATION') && (
-                <div className="error-help">
-                  <p>💡 To see real-time weather for your location:</p>
-                  <ol>
-                    <li>Ensure location services are enabled in your device settings</li>
-                    <li>Allow location access when prompted by your browser</li>
-                    <li>For iOS: Settings → Privacy → Location Services → Safari → Allow</li>
-                    <li>For Android: Settings → Location → App Permissions → Browser → Allow</li>
-                  </ol>
-                </div>
-              )}
-              {error.code === 'API_KEY_ERROR' && (
-                <div className="error-help">
-                  <p>💡 Weather API connection error. Please try again later.</p>
-                </div>
-              )}
-            </div>
+        {error && !loading && (
+          <div className="weather-error">
+            <div className="error-icon">❌</div>
+            <h3>Weather Unavailable</h3>
+            <p>{error.message}</p>
+            {error.code === 'NOT_FOUND' && (
+              <div className="error-suggestions">
+                <p>Try a different location:</p>
+                <ul>
+                  <li>London, UK</li>
+                  <li>New York, US</li>
+                  <li>Tokyo, Japan</li>
+                  <li>Sydney, Australia</li>
+                </ul>
+              </div>
+            )}
             <button 
-              className="retry-btn"
-              onClick={refreshWeather}
-              aria-label={t('try_again')}
+              onClick={() => setError(null)} 
+              className="retry-button"
             >
-              {t('try_again')}
+              Try Again
             </button>
           </div>
         )}
 
-        {weather && (
-          <div className="weather-content">
-            
+        {weather && !loading && (
+          <div className="weather-display">
             <div className="weather-main">
-              <div className="weather-icon" aria-hidden="true">
-                {getWeatherIcon(weather.icon)}
+              <div className="weather-location">
+                <h3>{weather.location}</h3>
+                <p>{weather.countryName}</p>
               </div>
-              <div className="weather-temp">
-                <span className="temperature" aria-label={`Temperature ${formatTemperature(weather.temperature)}`}>
+              
+              <div className="weather-temperature">
+                <div className="temperature-main">
                   {formatTemperature(weather.temperature)}
-                </span>
-                <span className="feels-like">
-                  {t('feels_like')} {formatTemperature(weather.feelsLike)}
-                </span>
+                </div>
+                <div className="weather-icon">
+                  <img 
+                    src={`https:${weather.icon}`}
+                    alt={weather.description}
+                  />
+                </div>
               </div>
-            </div>
-
-            <div className="weather-info">
-              <h2 className="location" aria-label={`Location: ${weather.location}, ${weather.countryName}`}>
-                <span className="country-flag" aria-hidden="true">
-                  {getCountryFlag(weather.country)}
-                </span> {weather.location}, {weather.countryName}
-              </h2>
-              <p className="description" aria-label={`Weather condition: ${weather.description}`}>
-                {capitalize(weather.description)}
-              </p>
+              
+              <div className="weather-description">
+                {weather.description}
+              </div>
+              
+              <div className="feels-like">
+                Feels like {formatTemperature(weather.feelsLike)}
+              </div>
             </div>
 
             <div className="weather-details">
               <div className="detail-item">
-                <span className="detail-label">{t('humidity')}</span>
-                <span className="detail-value" aria-label={`${t('humidity')} ${weather.humidity} percent`}>
-                  💧 {weather.humidity}%
-                </span>
+                <span className="detail-icon">💧</span>
+                <span className="detail-label">Humidity</span>
+                <span className="detail-value">{weather.humidity}%</span>
               </div>
+              
               <div className="detail-item">
-                <span className="detail-label">{t('wind')}</span>
-                <span className="detail-value" aria-label={`${t('wind')} speed ${formatWindSpeed(weather.windSpeed)}`}>
-                  💨 {formatWindSpeed(weather.windSpeed)}
-                </span>
+                <span className="detail-icon">💨</span>
+                <span className="detail-label">Wind</span>
+                <span className="detail-value">{formatWindSpeed(weather.windSpeed)}</span>
               </div>
+              
               <div className="detail-item">
-                <span className="detail-label">{t('pressure')}</span>
-                <span className="detail-value" aria-label={`${t('pressure')} ${weather.pressure} hectopascals`}>
-                  📊 {weather.pressure} hPa
-                </span>
+                <span className="detail-icon">🌡️</span>
+                <span className="detail-label">Pressure</span>
+                <span className="detail-value">{weather.pressure} hPa</span>
               </div>
             </div>
 
             {lastUpdated && (
-              <div className="last-updated" aria-live="polite">
-                <p>{t('last_updated')}: {formatTimeI18n(lastUpdated)}</p>
+              <div className="weather-footer">
+                <p>Last updated: {formatTime(lastUpdated)}</p>
               </div>
             )}
           </div>
         )}
 
-        {error && error.code !== 'DEMO_MODE' && weather && (
-          <div className="weather-warning">
-            <p>⚠️ {error.message}</p>
+        {!weather && !loading && !error && (
+          <div className="weather-welcome">
+            <div className="welcome-icon">🌍</div>
+            <h3>Welcome to Weather</h3>
+            <p>Search for any city or location to get current weather information.</p>
+            <div className="popular-locations">
+              <p>Popular locations:</p>
+              <div className="location-suggestions">
+                {['London', 'New York', 'Tokyo', 'Paris', 'Sydney'].map((city) => (
+                  <button
+                    key={city}
+                    onClick={() => {
+                      setLocationInput(city);
+                      fetchWeatherByLocation(city);
+                    }}
+                    className="suggestion-button"
+                  >
+                    {city}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>

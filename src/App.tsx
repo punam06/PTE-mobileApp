@@ -6,12 +6,14 @@ import { Stopwatch } from './components/Stopwatch';
 import { Timer } from './components/Timer';
 import { Weather } from './components/Weather';
 import { LanguageSelector } from './components/LanguageSelector';
+import { Instructions } from './components/Instructions';
 import './App.css';
 
 function App() {
   const orientation = useOrientation();
   const currentFeature = getFeatureFromOrientation(orientation);
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
 
   return (
     <I18nProvider>
@@ -24,6 +26,12 @@ function App() {
           />
         </div>
 
+        {/* Instructions */}
+        <Instructions 
+          isVisible={showInstructions}
+          onToggle={() => setShowInstructions(!showInstructions)}
+        />
+
         {/* Orientation indicator for debugging/development */}
         <div className="orientation-debug" aria-live="polite">
           <span>🧭 {orientation} → {currentFeature}</span>
@@ -34,31 +42,6 @@ function App() {
         <Stopwatch isActive={currentFeature === 'stopwatch'} />
         <Timer isActive={currentFeature === 'timer'} />
         <Weather isActive={currentFeature === 'weather'} />
-
-        {/* Instructions overlay for first-time users */}
-        <div className="instructions-overlay" role="banner">
-          <div className="instructions-content">
-            <h3>📱 Rotate your device to switch features!</h3>
-            <div className="feature-list">
-              <div className="feature-item">
-                <span className="icon">📱↑</span>
-                <span>Portrait Up → Alarm Clock</span>
-              </div>
-              <div className="feature-item">
-                <span className="icon">📱→</span>
-                <span>Landscape → Stopwatch</span>
-              </div>
-              <div className="feature-item">
-                <span className="icon">📱↓</span>
-                <span>Portrait Down → Timer</span>
-              </div>
-              <div className="feature-item">
-                <span className="icon">📱←</span>
-                <span>Landscape Left → Weather</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </I18nProvider>
   );
