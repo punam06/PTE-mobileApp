@@ -61,12 +61,12 @@
 }
 
 .language-list {
-  max-height: 450px;
+  max-height: 500px;
   overflow-y: auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 4px;
-  padding: 8px;
+  padding: 12px;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
@@ -200,44 +200,47 @@
 /* Landscape mode specific adjustments */
 @media (max-width: 768px) and (orientation: landscape) {
   .language-dropdown {
-    min-width: 650px;
-    max-width: 95vw;
-    max-height: 80vh;
+    min-width: 780px;
+    max-width: 98vw;
+    max-height: 85vh;
   }
   
   .language-list {
-    max-height: 420px;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 3px;
-    padding: 12px;
+    max-height: 460px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    padding: 8px;
+    overflow-y: auto;
   }
   
   .language-option {
-    padding: 10px 14px;
-    font-size: 0.9rem;
-    min-height: 40px;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+    min-height: 34px;
   }
   
   .language-flag {
-    font-size: 1.2rem;
+    font-size: 1.0rem;
   }
   
   .language-name {
     font-weight: 600;
+    font-size: 0.8rem;
   }
 }
 
 /* Larger landscape screens (tablets, wide phones) */
 @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
   .language-dropdown {
-    min-width: 700px;
-    max-width: 85vw;
+    min-width: 800px;
+    max-width: 90vw;
   }
   
   .language-list {
-    max-height: 500px;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 4px;
+    max-height: 550px;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 3px;
+    overflow-y: auto;
   }
 }
 
