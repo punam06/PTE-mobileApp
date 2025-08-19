@@ -91,6 +91,16 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ isVisible, o
         
         {isVisible && (
           <div className="language-dropdown" role="menu">
+            <div className="language-dropdown-header">
+              <h3>Select Language</h3>
+              <button 
+                className="language-close-btn"
+                onClick={onToggle}
+                aria-label="Close language selector"
+              >
+                ✕
+              </button>
+            </div>
             <div className="language-list">
               {languages.map((language) => (
                 <button
