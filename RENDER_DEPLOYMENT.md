@@ -35,16 +35,16 @@ After deployment, you can add a custom domain:
 
 ## 🌐 Expected URLs
 
-**Custom Domain (Preferred):**
-- `https://www.ptemobileapp.com`
-- `https://ptemobileapp.com` (redirects to www)
-
-**Default Render URL (Backup):**
+**Primary Render URL (Free):**
 - `https://pte-mobile-weather-app.onrender.com`
+- `https://pte-mobile-weather-app-[hash].onrender.com`
 
-**Setup Required:** 
-- Domain registration for `ptemobileapp.com`
-- DNS configuration (see CUSTOM_DOMAIN_SETUP.md)
+**Backup: Surge.sh (Currently Live):**
+- `https://punam-pte-weather-api.surge.sh`
+
+**Custom Domain (Optional):**
+- Can be added later if domain is purchased
+- See CUSTOM_DOMAIN_SETUP.md for instructions
 
 **Features Included:**
 - ✅ Real-time weather data with WeatherAPI

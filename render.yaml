@@ -5,9 +5,6 @@ services:
     buildCommand: npm install && npm run build
     staticPublishPath: ./build
     pullRequestPreviewsEnabled: true
-    domains:
-      - www.ptemobileapp.com
-      - ptemobileapp.com
     headers:
       - path: /*
         name: X-Robots-Tag

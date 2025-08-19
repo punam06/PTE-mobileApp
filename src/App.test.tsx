@@ -23,10 +23,10 @@ describe('App Component', () => {
     expect(debugIndicator).toBeInTheDocument();
   });
 
-  test('shows instructions overlay', () => {
+  test('shows help button', () => {
     render(<App />);
-    const instructions = screen.getByText(/rotate your device/i);
-    expect(instructions).toBeInTheDocument();
+    const helpButton = screen.getByRole('button', { name: /show instructions/i });
+    expect(helpButton).toBeInTheDocument();
   });
 
   test('renders alarm clock component by default', () => {
