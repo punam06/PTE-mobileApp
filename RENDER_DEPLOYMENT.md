@@ -35,9 +35,16 @@ After deployment, you can add a custom domain:
 
 ## 🌐 Expected URLs
 
-**Default Render URL Pattern:**
+**Custom Domain (Preferred):**
+- `https://www.ptemobileapp.com`
+- `https://ptemobileapp.com` (redirects to www)
+
+**Default Render URL (Backup):**
 - `https://pte-mobile-weather-app.onrender.com`
-- `https://pte-mobile-weather-app-[random].onrender.com`
+
+**Setup Required:** 
+- Domain registration for `ptemobileapp.com`
+- DNS configuration (see CUSTOM_DOMAIN_SETUP.md)
 
 **Features Included:**
 - ✅ Real-time weather data with WeatherAPI
