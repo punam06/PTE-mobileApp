@@ -46,10 +46,10 @@ export const Instructions: React.FC<InstructionsProps> = ({ isVisible, onToggle 
                 <p>{t('rotation_instruction')}</p>
                 
                 <div className="feature-grid">
-                  <div className="feature-card">
-                    <div className="feature-icon">📱</div>
+                  <div className="feature-card alarm-card">
+                    <div className="feature-icon alarm-icon">⏰</div>
                     <div className="feature-info">
-                      <h4>{t('alarm_clock')}</h4>
+                      <h4>⏰ {t('alarm_clock')}</h4>
                       <p><strong>📱 Portrait Mode (Vertical)</strong></p>
                       <p>{t('portrait_up_desc')}</p>
                       <div className="orientation-demo">
@@ -59,10 +59,10 @@ export const Instructions: React.FC<InstructionsProps> = ({ isVisible, onToggle 
                     </div>
                   </div>
                   
-                  <div className="feature-card">
-                    <div className="feature-icon">�</div>
+                  <div className="feature-card stopwatch-card">
+                    <div className="feature-icon stopwatch-icon">⏱️</div>
                     <div className="feature-info">
-                      <h4>{t('stopwatch')}</h4>
+                      <h4>⏱️ {t('stopwatch')}</h4>
                       <p><strong>📲 Landscape Mode (Horizontal Right)</strong></p>
                       <p>{t('landscape_right_desc')}</p>
                       <div className="orientation-demo">
@@ -72,10 +72,10 @@ export const Instructions: React.FC<InstructionsProps> = ({ isVisible, onToggle 
                     </div>
                   </div>
                   
-                  <div className="feature-card">
-                    <div className="feature-icon">📱</div>
+                  <div className="feature-card timer-card">
+                    <div className="feature-icon timer-icon">⏲️</div>
                     <div className="feature-info">
-                      <h4>{t('timer')}</h4>
+                      <h4>⏲️ {t('timer')}</h4>
                       <p><strong>📱 Portrait Mode (Upside Down)</strong></p>
                       <p>{t('portrait_down_desc')}</p>
                       <div className="orientation-demo">
@@ -85,10 +85,10 @@ export const Instructions: React.FC<InstructionsProps> = ({ isVisible, onToggle 
                     </div>
                   </div>
                   
-                  <div className="feature-card">
-                    <div className="feature-icon">�</div>
+                  <div className="feature-card weather-card">
+                    <div className="feature-icon weather-icon">🌤️</div>
                     <div className="feature-info">
-                      <h4>{t('weather')}</h4>
+                      <h4>🌤️ {t('weather')}</h4>
                       <p><strong>📲 Landscape Mode (Horizontal Left)</strong></p>
                       <p>{t('landscape_left_desc')}</p>
                       <div className="orientation-demo">

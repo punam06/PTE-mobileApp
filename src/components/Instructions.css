@@ -233,6 +233,63 @@
   letter-spacing: 0.5px;
 }
 
+/* Feature-specific styling */
+.alarm-card {
+  border-color: #ff6b6b;
+}
+
+.alarm-card:hover {
+  border-color: #ff5252;
+  box-shadow: 0 8px 25px rgba(255, 82, 82, 0.15);
+}
+
+.alarm-icon {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%) !important;
+  color: white;
+}
+
+.stopwatch-card {
+  border-color: #4ecdc4;
+}
+
+.stopwatch-card:hover {
+  border-color: #26a69a;
+  box-shadow: 0 8px 25px rgba(38, 166, 154, 0.15);
+}
+
+.stopwatch-icon {
+  background: linear-gradient(135deg, #4ecdc4 0%, #26a69a 100%) !important;
+  color: white;
+}
+
+.timer-card {
+  border-color: #45b7d1;
+}
+
+.timer-card:hover {
+  border-color: #2196f3;
+  box-shadow: 0 8px 25px rgba(33, 150, 243, 0.15);
+}
+
+.timer-icon {
+  background: linear-gradient(135deg, #45b7d1 0%, #2196f3 100%) !important;
+  color: white;
+}
+
+.weather-card {
+  border-color: #f39c12;
+}
+
+.weather-card:hover {
+  border-color: #e67e22;
+  box-shadow: 0 8px 25px rgba(230, 126, 34, 0.15);
+}
+
+.weather-icon {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%) !important;
+  color: white;
+}
+
 .details-toggle {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   border: 2px solid #dee2e6;
