@@ -243,21 +243,29 @@
   }
   
   .language-list {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     max-height: none;
     gap: 8px;
-    padding: 20px;
+    padding: 15px;
     flex: 1;
     overflow-y: auto;
   }
   
   .language-option {
-    padding: 16px 20px;
+    padding: 16px 15px;
     font-size: 1rem;
     min-height: 50px;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
   }
   
   .language-option:hover {
@@ -266,10 +274,21 @@
   
   .language-flag {
     font-size: 1.3rem;
+    flex-shrink: 0;
+    margin-right: 12px;
   }
   
   .language-name {
     font-size: 1rem;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .checkmark {
+    flex-shrink: 0;
+    margin-left: 8px;
   }
   
   .language-info {
