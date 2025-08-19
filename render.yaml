@@ -2,22 +2,10 @@ services:
   - type: web
     name: pte-mobile-weather-app
     env: static
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./build
-    pullRequestPreviewsEnabled: true
-    headers:
-      - path: /*
-        name: X-Robots-Tag
-        value: noindex
-      - path: /static/*
-        name: Cache-Control
-        value: public, max-age=31536000, immutable
+    buildCommand: cd pte-mobile-app && npm ci && npm run build
+    staticPublishPath: pte-mobile-app/build
+    pullRequestPreviewsEnabled: false
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
-    envVars:
-      - key: NODE_VERSION
-        value: "18"
-      - key: NPM_VERSION
-        value: "9"
