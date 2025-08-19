@@ -189,8 +189,48 @@
 .feature-info p {
   color: #666;
   font-size: 14px;
-  margin: 0;
+  margin: 0 0 10px 0;
   line-height: 1.4;
+}
+
+.orientation-demo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(0, 122, 204, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 122, 204, 0.2);
+}
+
+.phone-demo {
+  font-size: 20px;
+  transition: transform 0.3s ease;
+}
+
+.phone-demo.portrait {
+  transform: rotate(0deg);
+}
+
+.phone-demo.landscape-right {
+  transform: rotate(90deg);
+}
+
+.phone-demo.portrait-down {
+  transform: rotate(180deg);
+}
+
+.phone-demo.landscape-left {
+  transform: rotate(-90deg);
+}
+
+.orientation-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #007acc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .details-toggle {

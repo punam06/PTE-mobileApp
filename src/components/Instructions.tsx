@@ -47,34 +47,54 @@ export const Instructions: React.FC<InstructionsProps> = ({ isVisible, onToggle 
                 
                 <div className="feature-grid">
                   <div className="feature-card">
-                    <div className="feature-icon">📱↑</div>
+                    <div className="feature-icon">📱</div>
                     <div className="feature-info">
                       <h4>{t('alarm_clock')}</h4>
+                      <p><strong>📱 Portrait Mode (Vertical)</strong></p>
                       <p>{t('portrait_up_desc')}</p>
+                      <div className="orientation-demo">
+                        <span className="phone-demo portrait">📱</span>
+                        <span className="orientation-label">↑ Portrait</span>
+                      </div>
                     </div>
                   </div>
                   
                   <div className="feature-card">
-                    <div className="feature-icon">📱→</div>
+                    <div className="feature-icon">�</div>
                     <div className="feature-info">
                       <h4>{t('stopwatch')}</h4>
+                      <p><strong>📲 Landscape Mode (Horizontal Right)</strong></p>
                       <p>{t('landscape_right_desc')}</p>
+                      <div className="orientation-demo">
+                        <span className="phone-demo landscape-right">📲</span>
+                        <span className="orientation-label">→ Landscape Right</span>
+                      </div>
                     </div>
                   </div>
                   
                   <div className="feature-card">
-                    <div className="feature-icon">📱↓</div>
+                    <div className="feature-icon">📱</div>
                     <div className="feature-info">
                       <h4>{t('timer')}</h4>
+                      <p><strong>📱 Portrait Mode (Upside Down)</strong></p>
                       <p>{t('portrait_down_desc')}</p>
+                      <div className="orientation-demo">
+                        <span className="phone-demo portrait-down">📱</span>
+                        <span className="orientation-label">↓ Portrait Down</span>
+                      </div>
                     </div>
                   </div>
                   
                   <div className="feature-card">
-                    <div className="feature-icon">📱←</div>
+                    <div className="feature-icon">�</div>
                     <div className="feature-info">
                       <h4>{t('weather')}</h4>
+                      <p><strong>📲 Landscape Mode (Horizontal Left)</strong></p>
                       <p>{t('landscape_left_desc')}</p>
+                      <div className="orientation-demo">
+                        <span className="phone-demo landscape-left">📲</span>
+                        <span className="orientation-label">← Landscape Left</span>
+                      </div>
                     </div>
                   </div>
                 </div>
