@@ -14,15 +14,15 @@ A comprehensive mobile-first Progressive Web App featuring:
 
 ## 🚀 **Deployment Options**
 
-### **1. Primary: Render.com (Free Subdomain)**
-- **Target URL**: `https://pte-mobile-weather-app.onrender.com`
-- **Configuration**: Complete with `render.yaml`
-- **SSL Certificate**: Automatic and free
-- **Status**: Ready for deployment (no domain purchase required)
+### **1. Primary: Render.com (Live & Active) ✅**
+- **Live URL**: `https://pte-mobileapp.onrender.com` ✅
+- **Status**: Successfully deployed and active
+- **SSL Certificate**: Automatic and free ✅
+- **Auto-deploy**: Enabled from GitHub main branch ✅
 
-### **2. Backup: Surge.sh (Currently Live)**
-- **Live URL**: `https://punam-pte-weather-api.surge.sh`
-- **Status**: ✅ Active and deployed
+### **2. Backup: Surge.sh (Also Live) ✅**
+- **Live URL**: `https://punam-pte-weather-api.surge.sh` ✅
+- **Status**: Active backup deployment
 - **Last Updated**: August 19, 2025
 
 ---
@@ -177,5 +177,5 @@ Your PTE Mobile Weather App is **fully tested**, **optimized**, and **ready for 
 ---
 
 **Repository**: `https://github.com/punam06/PTE-mobileApp`  
-**Live Demo**: `https://punam-pte-weather-api.surge.sh`  
-**Target Domain**: `https://www.ptemobileapp.com`
+**Live Primary**: `https://pte-mobileapp.onrender.com` ✅  
+**Live Backup**: `https://punam-pte-weather-api.surge.sh` ✅
