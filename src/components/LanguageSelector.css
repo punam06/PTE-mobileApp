@@ -1,6 +1,6 @@
 .language-selector {
   position: relative;
-  z-index: 9999;
+  z-index: 99999;
 }
 
 .language-backdrop {
@@ -9,9 +9,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 9998;
-  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99998;
+  backdrop-filter: blur(4px);
 }
 
 .language-toggle {
@@ -48,16 +48,16 @@
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  background: rgba(0, 0, 0, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.98);
+  border: 2px solid rgba(255, 255, 255, 0.4);
   border-radius: 15px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(25px);
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.8);
   min-width: 520px;
   max-width: 90vw;
   animation: dropdownSlide 0.3s ease-out;
   overflow: hidden;
-  z-index: 10000;
+  z-index: 100000;
 }
 
 .language-list {
@@ -187,11 +187,15 @@
   .language-dropdown {
     min-width: 580px;
     max-width: 95vw;
+    position: fixed;
+    top: 15vh;
+    right: 2.5vw;
+    left: 2.5vw;
   }
   
   .language-list {
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    max-height: 500px;
+    max-height: 600px;
     gap: 4px;
     padding: 12px;
   }
@@ -200,32 +204,43 @@
 /* Landscape mode specific adjustments */
 @media (max-width: 768px) and (orientation: landscape) {
   .language-dropdown {
-    min-width: 780px;
+    min-width: 820px;
     max-width: 98vw;
-    max-height: 85vh;
+    max-height: 90vh;
+    position: fixed;
+    top: 10vh;
+    right: 1vw;
   }
   
   .language-list {
-    max-height: 460px;
+    max-height: 600px;
     grid-template-columns: repeat(4, 1fr);
-    gap: 2px;
-    padding: 8px;
+    gap: 1px;
+    padding: 6px;
     overflow-y: auto;
   }
   
   .language-option {
-    padding: 8px 10px;
-    font-size: 0.8rem;
-    min-height: 34px;
+    padding: 6px 8px;
+    font-size: 0.75rem;
+    min-height: 30px;
   }
   
   .language-flag {
-    font-size: 1.0rem;
+    font-size: 0.9rem;
   }
   
   .language-name {
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+  }
+  
+  .language-info {
+    padding: 8px 12px;
+  }
+  
+  .language-info p {
+    font-size: 0.65rem;
   }
 }
 
