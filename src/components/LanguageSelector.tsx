@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useI18nContext } from '../hooks/useI18n';
 import { Locale } from '../utils/i18n';
 import './LanguageSelector.css';
@@ -10,6 +10,32 @@ interface LanguageSelectorProps {
 
 export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ isVisible, onToggle }) => {
   const { config, setLocale } = useI18nContext();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) && isVisible) {
+        onToggle();
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isVisible) {
+        onToggle();
+      }
+    };
+
+    if (isVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [isVisible, onToggle]);
 
   const languages: { code: Locale; name: string; flag: string }[] = [
     { code: 'en-US', name: 'English (US)', flag: '🇺🇸' },
@@ -42,46 +68,57 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ isVisible, o
   const currentLanguage = languages.find(lang => lang.code === config.locale);
 
   return (
-    <div className="language-selector">
-      <button 
-        className="language-toggle"
-        onClick={onToggle}
-        aria-label="Select language"
-        aria-expanded={isVisible}
-      >
-        <span className="current-flag">{currentLanguage?.flag}</span>
-        <span className="dropdown-arrow">{isVisible ? '▲' : '▼'}</span>
-      </button>
-      
+    <>
+      {/* Backdrop overlay when dropdown is open */}
       {isVisible && (
-        <div className="language-dropdown" role="menu">
-          <div className="language-list">
-            {languages.map((language) => (
-              <button
-                key={language.code}
-                className={`language-option ${config.locale === language.code ? 'active' : ''}`}
-                onClick={() => handleLanguageChange(language.code)}
-                role="menuitem"
-                aria-label={`Select ${language.name}`}
-              >
-                <span className="language-flag">{language.flag}</span>
-                <span className="language-name">{language.name}</span>
-                {config.locale === language.code && (
-                  <span className="checkmark">✓</span>
-                )}
-              </button>
-            ))}
-          </div>
-          <div className="language-info">
-            <p>
-              {config.timeFormat === '12h' ? '12-hour' : '24-hour'} time format
-            </p>
-            <p>
-              {config.temperatureUnit === 'metric' ? 'Celsius' : 'Fahrenheit'} temperature
-            </p>
-          </div>
-        </div>
+        <div 
+          className="language-backdrop" 
+          onClick={onToggle}
+          aria-hidden="true"
+        />
       )}
-    </div>
+      
+      <div className="language-selector" ref={dropdownRef}>
+        <button 
+          className="language-toggle"
+          onClick={onToggle}
+          aria-label="Select language"
+          aria-expanded={isVisible}
+        >
+          <span className="current-flag">{currentLanguage?.flag}</span>
+          <span className="dropdown-arrow">{isVisible ? '▲' : '▼'}</span>
+        </button>
+        
+        {isVisible && (
+          <div className="language-dropdown" role="menu">
+            <div className="language-list">
+              {languages.map((language) => (
+                <button
+                  key={language.code}
+                  className={`language-option ${config.locale === language.code ? 'active' : ''}`}
+                  onClick={() => handleLanguageChange(language.code)}
+                  role="menuitem"
+                  aria-label={`Select ${language.name}`}
+                >
+                  <span className="language-flag">{language.flag}</span>
+                  <span className="language-name">{language.name}</span>
+                  {config.locale === language.code && (
+                    <span className="checkmark">✓</span>
+                  )}
+                </button>
+              ))}
+            </div>
+            <div className="language-info">
+              <p>
+                {config.timeFormat === '12h' ? '12-hour' : '24-hour'} time format
+              </p>
+              <p>
+                {config.temperatureUnit === 'metric' ? 'Celsius' : 'Fahrenheit'} temperature
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
