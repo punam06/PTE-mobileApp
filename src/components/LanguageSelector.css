@@ -298,7 +298,7 @@
   }
 }
 
-/* Landscape mode specific adjustments */
+/* Landscape mode specific adjustments - FORCE UPDATE */
 @media (max-width: 768px) and (orientation: landscape) {
   .language-dropdown {
     min-width: 900px;
@@ -311,7 +311,7 @@
   
   .language-list {
     max-height: 75vh;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 1fr) !important;
     gap: 3px;
     padding: 10px;
     overflow-y: auto;
